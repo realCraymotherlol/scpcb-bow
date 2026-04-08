@@ -15,6 +15,12 @@ Function UpdateEvents()
 	UpdateRooms()
 	
 	For e.Events = Each Events
+		If UpdateEvent\Subscribers > 0 Then
+			PrepareFunction(1)
+			SetArgObj(0, &e)
+			CallHook(UpdateEvent)
+		EndIf
+
 		Select e\EventName
 			Case "exit1"
 				;[Block]

@@ -2110,6 +2110,13 @@ Function FillRoom(r.Rooms)
 	Local xtemp%, ytemp%, ztemp%
 	
 	Local t1;, Bump	
+
+	If FillRoom\Subscribers > 0 Then
+		PrepareFunction(1)
+		Local rr.Rooms = r ; TODO: Fucking stupid!
+		SetArgObj(0, &rr)
+		CallHook(FillRoom)
+	EndIf
 	
 	Select r\RoomTemplate\Name
 		Case "room860"

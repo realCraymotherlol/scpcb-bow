@@ -82,6 +82,13 @@ Function CreateNPC.NPCs(NPCtype%, x#, y#, z#)
 	n\MaxGravity = 0.2
 	n\CollRadius = 0.2
 	n\FallingPickDistance = 10
+
+	If CreateNPC\Subscribers > 0 Then
+		PrepareFunction(1)
+		SetArgObj(0, &n)
+		CallHook(CreateNPC.Hooks)
+	EndIf
+
 	Select NPCtype
 		Case NPCtype173
 			;[Block]
@@ -685,6 +692,12 @@ Function UpdateNPCs()
 		;A variable to determine if the NPC is in the facility or not
 		n\InFacility = CheckForNPCInFacility(n)
 		
+		If UpdateNPC\Subscribers > 0 Then
+			PrepareFunction(1)
+			SetArgObj(0, &n)
+			CallHook(UpdateNPC)
+		EndIf
+
 		Select n\NPCtype
 			Case NPCtype173
 				;[Block]

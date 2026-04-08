@@ -1,6 +1,7 @@
 Type ActiveMods
     Field Path$
     Field IsLocale%
+    Field ScriptModule%    
 End Type
 
 Type Mods
@@ -16,7 +17,8 @@ Type Mods
     Field IsUserOwner%
 End Type
 
-Global ModCount%
+Global ModCount% = 0
+Global ActiveModCount% = 0
 
 Const STEAM_ITEM_ID_FILENAME$ = "steam_itemid.txt"
 
@@ -134,6 +136,7 @@ End Function
 Const LOCALIZATIONS_DIR$ = "Localization\"
 
 Function UpdateActiveMods()
+    ActiveModCount = 0
     HasDubbedAudio = False
 
     Local txt$
@@ -162,6 +165,7 @@ Function UpdateActiveMods()
             mm\Path = m\Path
             If txt <> "" Then txt = txt + ", "
             txt = txt + m\Id
+            ActiveModCount = ActiveModCount + 1
         EndIf
     Next
     SetErrorMsg(10, "Active mods: " + txt)

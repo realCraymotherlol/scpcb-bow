@@ -1,4 +1,4 @@
-Const VersionNumber$ = "1.3.12.1"
+Const VersionNumber$ = "1.3.12.1-s0"
 ;Only change this if the version given isn't working with the current build version - ENDSHN
 Const CompatibleNumber$ = "1.3.12"
 
@@ -123,6 +123,34 @@ Include "ModManager.bb"
 Global HasDubbedAudio%
 Global ModsEnabled% = GetOptionInt("general", "enable mods") And (Not HasCLIFlag("nomods"))
 If ModsEnabled Then ReloadMods()
+
+Include "ScriptManager.bb"
+SetMessageCallback(@ScriptMessageCallback)
+LoadScripts()
+
+Function ScriptMessageCallback(severity%, line%, column%, section$, message$)
+	Local r%, g%, b%
+	Select severity
+		Case 0 r = 255 : g = 0 : b = 0
+		Case 1 r = 255 : g = 255 : b = 0
+		Case 1 r = 255 : g = 255 : b = 255
+	End Select
+	CreateConsoleMsg("[AngelScript] " + section + " (" + line + "," + column + "): " + message, r, g, b)
+End Function
+
+Function LoadScripts()
+	InitializeHooks(ActiveModCount)
+	For m.ActiveMods = Each ActiveMods
+		If m\ScriptModule <> 0 Then FreeModule(m\ScriptModule) : m\ScriptModule = 0
+		Local modPath$ = m\Path + "main.as"
+		If FileType(modPath) = 1 Then
+			m\ScriptModule = CreateModule(m\Path, modPath$)
+			SubscribeModuleHooks(m\ScriptModule)
+		EndIf
+	Next
+
+	If Initialize\Subscribers > 0 Then PrepareFunction(0) : CallHook(Initialize)
+End Function
 
 Global Font1%, Font2%, Font3%, Font4%, Font5%, Font6%
 Global ConsoleFont%
@@ -1725,6 +1753,10 @@ Function UpdateConsole()
 					EndIf
 					If ShowMap% Then CreateConsoleMsg("TYPE " + Chr(34) + "help showmap" + Chr(34) + " FOR A LIST OF ROOM COLORS")
 					;[End Block]
+				Case "reload"
+					CreateConsoleMsg("Reloading all scripts...")
+					LoadScripts()
+					CreateConsoleMsg("Reloaded all scripts.")
 				Case "mav"
 					RuntimeErrorExt("Violation Access Memory")
 				Case "jorge"
@@ -3599,6 +3631,8 @@ While IsRunning
 		;UpdateSaveMSG()
 	End If
 	
+	If Update\Subscribers > 0 Then PrepareFunction(0) : CallHook(Update)
+
 	ApplyBorderlessResizing()
 	
 	CatchErrors("Main loop / uncaught")
