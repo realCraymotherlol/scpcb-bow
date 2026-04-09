@@ -1820,7 +1820,7 @@ class Room {
     carray<B3D::Sprite@> LightSprites;
     carray<B3D::Entity@> Objects;
     carray<B3D::Entity@> Levers;
-    carray<Door@> RoomDoors;
+    carray<Door@> Doors;
     carray<NPC@> NPC;
     MaintenanceTunnel@ MaintenanceTunnel;
     carray<Room@> Adjacent;

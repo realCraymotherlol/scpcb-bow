@@ -74,6 +74,7 @@ Function RegisterOptions()
     RegisterGlobalProperty("bool SpeedRunMode", &SpeedRunMode)
     RegisterGlobalProperty("bool NumericSeeds", &UseNumericSeeds)
 
+    ; Don't forget to remove!!
     RegisterGlobalProperty("bool DebugResourcePackStrictLoad", &DebugResourcePacks)
     RegisterGlobalProperty("bool DebugMapGen", &DebugMapGen)
     RegisterGlobalProperty("bool DebugForestGen", &DebugForestGen)
@@ -504,7 +505,7 @@ Function RegisterMap()
 
     RegisterTypeField("Room", "carray<B3D::Entity@> Objects", %Rooms\Objects)
     RegisterTypeField("Room", "carray<B3D::Entity@> Levers", %Rooms\Levers)
-    RegisterTypeField("Room", "carray<Door@> RoomDoors", %Rooms\RoomDoors)
+    RegisterTypeField("Room", "carray<Door@> Doors", %Rooms\RoomDoors)
     RegisterTypeField("Room", "carray<NPC@> NPC", %Rooms\NPC)
 
     RegisterTypeField("Room", "MaintenanceTunnel@ MaintenanceTunnel", %Rooms\grid)
