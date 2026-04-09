@@ -11,6 +11,47 @@ Function RegisterOptions()
     SetDefaultNamespace(ns)
 End Function
 
+Function RegisterIO()
+    ; TODO: Sanitize paths (also in audio).
+    ; TODO: Consider "hijacking" the standard B3D functions.
+    RegisterGlobalFunction("B3D::Image@ LoadImage(string file, float scale=0, int flags=0)", @LoadImage_Strict)
+    RegisterGlobalFunction("B3D::Mesh@ LoadMesh(string file, B3D::Entity@ parent)", @LoadMesh_Strict)
+    RegisterGlobalFunction("B3D::Mesh@ LoadAnimMesh(string file, B3D::Entity@ parent)", @LoadAnimMesh_Strict)
+    RegisterGlobalFunction("B3D::Texture@ LoadTexture(string file, int flags=1)", @LoadTexture_Strict)
+    RegisterGlobalFunction("B3D::Texture@ LoadAnimTexture(string file, int flags, int columns, int rows, int start, int count)", @LoadAnimTexture_Strict)
+    RegisterGlobalFunction("B3D::Brush@ LoadBrush(string file, int flags, float u=1, float v=1)", @LoadBrush_Strict)
+    RegisterGlobalFunction("B3D::Font@ LoadFont(string file, int height, bool bold=false, bool italic=false)", @LoadFont_Strict)
+    RegisterGlobalFunction("B3D::Effect@ LoadEffect(string file)", @LoadEffect_Strict)
+    ; TODO: Sprite (used)? Terrain (unused)? Image grid (unused)?
+End Function
+
+Function RegisterCBAudio()
+    RegisterType("Sound")
+
+    RegisterTypeConstructor("Sound", "Sound@ f(string file)", @LoadSound_Strict)
+    RegisterObjectMethod("Sound", "void Free()", @FreeSound_Strict)
+    
+    RegisterObjectMethod("Sound", "B3D::Channel@ Play()", @PlaySound_Strict)
+
+
+    RegisterType("Stream")
+    RegisterTypeConstructor("Stream", "Stream@ f(string file, float volume=1, int customMode=2)", @StreamSound_Strict)
+    RegisterObjectMethod("Stream", "void Stop()", @StopStream_Strict)
+    
+    RegisterObjectMethod("Stream", "void SetVolume(float volume, bool isSFX=false)", @SetStreamVolume_Strict)
+    RegisterObjectMethod("Stream", "void SetPan(float pan)", @SetStreamPan_Strict)
+    RegisterObjectMethod("Stream", "void UpdateOrigin(B3D::Camera@ cam, B3D::Entity@ entity, float range=10, float volume=1)", @UpdateStreamSoundOrigin)
+
+    RegisterObjectMethod("Stream", "void SetPaused(bool paused)", @SetStreamPaused_Strict)
+    RegisterObjectMethod("Stream", "bool get_IsPlaying() property", @IsStreamPlaying_Strict)
+
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Sound") Else SetDefaultNamespace("Sound")
+
+    SetDefaultNamespace(ns)
+
+End Function
+
 Function RegisterCBInput()
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::Input") Else SetDefaultNamespace("Input")
@@ -366,6 +407,8 @@ Function RegisterMap()
     RegisterForest()
     RegisterMaintenanceTunnel()
 
+    RegisterTypeConstructor("Room", "Room@ f(int zone, int shape, float x, float y, float z, int angle, string name)", @CreateRoom)
+
     RegisterTypeField("Room", "int Zone", %Rooms\zone)
     RegisterTypeField("Room", "int Found", %Rooms\found)
     RegisterTypeField("Room", "B3D::Pivot@ Object", %Rooms\obj)
@@ -427,6 +470,8 @@ Function RegisterMap()
     RegisterTypeField("Room", "float MaxX", %Rooms\MaxX)
     RegisterTypeField("Room", "float MaxY", %Rooms\MaxY)
     RegisterTypeField("Room", "float MaxZ", %Rooms\MaxZ)
+
+    RegisterGlobalFunction("B3D::Pivot@ LoadRMesh(string file, RoomTemplate@ template=null)", @LoadRMesh)
 End Function
 
 Function RegisterDecal()
@@ -592,6 +637,8 @@ Function RegisterCB()
     SetDefaultNamespace("CB")
     RegisterCommon()
     RegisterOptions()
+    RegisterIO()
+    RegisterCBAudio()
     RegisterCBInput()
     ; Fucking ugly but the dependencies have a ton of circles.
     RegisterTypeFromPtr("Waypoint", %WayPoints)

@@ -4,11 +4,6 @@ void DebugLogRuntimeStats();
 Channel@ PlayMusic(string midifile, int mode = 0);
 }
 
-namespace B3D::Sound {
-B3D::Sound@ Load(string filename);
-B3D::Sound@ Load3D(string filename);
-}
-
 namespace B3D::Bank {
 B3D::Bank@ Create(int size = 0);
 int StringSize(string str);
@@ -24,7 +19,6 @@ void CopyPixelFast(int srcX, int srcY, B3D::Buffer@ srcBuffer, int destX, int de
 }
 
 namespace B3D::Font {
-B3D::Font@ Load(string fontname, int height = 12, int bold = 0, int italic = 0, int underlined = 0, int smooth = 1);
 B3D::Font@ get_Current() property;
 void set_Current(B3D::Font@ font) property;
 int get_Width() property;
@@ -39,9 +33,6 @@ B3D::Movie@ Open(string file);
 }
 
 namespace B3D::Image {
-B3D::Image@ Load(string bmpfile, int flags = 0);
-B3D::Image@ LoadAnim(string bmpfile, int cellwidth, int cellheight, int first, int count);
-B3D::Image@ LoadAnimGrid(string bmpfile, int columns, int rows, int first, int count);
 B3D::Image@ Create(int width, int height, int frames = 1, int flags = 0);
 int get_Count() property;
 B3D::Image@ Get(int id);
@@ -137,9 +128,6 @@ int get_RunningOnWine() property;
 
 namespace B3D::Texture {
 B3D::Texture@ Create(int width, int height, int flags = 0, int frames = 1);
-B3D::Texture@ Load(string file, int flags = 1);
-B3D::Texture@ LoadAnim(string file, int flags, int width, int height, int first, int count);
-B3D::Texture@ LoadAnimGrid(string file, int flags, int columns, int rows, int first, int count);
 void SetLodBias(float bias);
 void SetAnisotropic(int level);
 void SetTextureDivisor(int div);
@@ -151,13 +139,11 @@ B3D::Texture@ Get(int id);
 }
 
 namespace B3D::Effect {
-B3D::Effect@ Load(string, string = "");
 string GetError();
 }
 
 namespace B3D::Brush {
 B3D::Brush@ Create(float red = 255, float green = 255, float blue = 255);
-B3D::Brush@ Load(string file, int textureFlags = 1, float uScale = 1, float vScale = 1);
 int get_Count() property;
 B3D::Brush@ Get(int id);
 }
@@ -185,8 +171,6 @@ int get_PickedTriangle() property;
 }
 
 namespace B3D::Mesh {
-B3D::Mesh@ Load(string file, B3D::Entity@ parent = null);
-B3D::Mesh@ LoadAnim(string file, B3D::Entity@ parent = null);
 B3D::Mesh@ Find(string file);
 B3D::Mesh@ Create(B3D::Entity@ parent = null);
 B3D::Mesh@ CreateCube(B3D::Entity@ parent = null);
@@ -212,7 +196,6 @@ B3D::Pivot@ Create(B3D::Entity@ parent = null);
 
 namespace B3D::Sprite {
 B3D::Sprite@ Create(B3D::Entity@ parent = null);
-B3D::Sprite@ Load(string file, int textureFlags = 1, B3D::Entity@ parent = null);
 }
 
 namespace B3D::Plane {
@@ -221,7 +204,6 @@ B3D::Plane@ Create(int segments = 1, B3D::Entity@ parent = null);
 
 namespace B3D::Terrain {
 B3D::Terrain@ Create(int gridSize, B3D::Entity@ parent = null);
-B3D::Terrain@ Load(string heightmapFile, B3D::Entity@ parent = null);
 }
 
 namespace B3D::Listener {
@@ -336,6 +318,17 @@ string CurrentDate();
 string CurrentTime();
 }
 
+namespace CB {
+B3D::Image@ LoadImage(string file, float scale = 0, int flags = 0);
+B3D::Mesh@ LoadMesh(string file, B3D::Entity@ parent);
+B3D::Mesh@ LoadAnimMesh(string file, B3D::Entity@ parent);
+B3D::Texture@ LoadTexture(string file, int flags = 1);
+B3D::Texture@ LoadAnimTexture(string file, int flags, int columns, int rows, int start, int count);
+B3D::Brush@ LoadBrush(string file, int flags, float u = 1, float v = 1);
+B3D::Font@ LoadFont(string file, int height, bool bold = false, bool italic = false);
+B3D::Effect@ LoadEffect(string file);
+}
+
 namespace CB::Waypoint {
 CB::Waypoint@ get_First() property;
 CB::Waypoint@ get_Last() property;
@@ -386,6 +379,10 @@ CB::MaintenanceTunnel@ get_First() property;
 CB::MaintenanceTunnel@ get_Last() property;
 }
 
+namespace CB {
+B3D::Pivot@ LoadRMesh(string file, RoomTemplate@ template = null);
+}
+
 namespace CB::Decal {
 CB::Decal@ get_First() property;
 CB::Decal@ get_Last() property;
@@ -409,7 +406,7 @@ namespace CB {
 float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignorerotation = true);
 }
 
-class array<T>{
+class array<T> {
     funcdef bool less(const T&in, const T&in);
     T& opIndex(uint index);
     const T& opIndex(uint index) const;
@@ -443,7 +440,7 @@ class array<T>{
     void set_length(uint) property;
 }
 
-class string{
+class string {
     ~string();
     string();
     string(const string&in);
@@ -468,7 +465,7 @@ class string{
     int Asc();
 }
 
-class dictionaryValue{
+class dictionaryValue {
     ~dictionaryValue();
     dictionaryValue();
     dictionaryValue& opAssign(const dictionaryValue&in);
@@ -483,7 +480,7 @@ class dictionaryValue{
     double opConv();
 }
 
-class dictionary{
+class dictionary {
     dictionary& opAssign(const dictionary&in);
     void Set(const string&in, const ?&in);
     bool Get(const string&in, ?&out) const;
@@ -506,17 +503,17 @@ class dictionary{
     const string& opForValue1(dictionaryIter@) const;
 }
 
-class dictionaryIter{
+class dictionaryIter {
 }
 
-class carray<T>{
+class carray<T> {
     T& opIndex(int idx);
     const T& opIndex(int idx) const;
 }
 
 namespace B3D {
 
-class Stream{
+class Stream {
     int get_IsEOF() const property;
     int get_IsReadAvail() const property;
     int ReadByte();
@@ -534,7 +531,7 @@ class Stream{
     void CopyTo(B3D::Stream@ destStream, int bufferSize = 16384);
 }
 
-class Channel{
+class Channel {
     void Stop();
     void Pause();
     void Resume();
@@ -544,7 +541,7 @@ class Channel{
     int get_IsPlaying() const property;
 }
 
-class Sound{
+class Sound {
     void Free();
     B3D::Channel@ Play();
     void Loop();
@@ -553,7 +550,7 @@ class Sound{
     void SetPan(float pan);
 }
 
-class Bank{
+class Bank {
     int Verify();
     void Free();
     int get_Size() const property;
@@ -574,7 +571,7 @@ class Bank{
     int WriteBytes(B3D::Stream@ file, int offset, int count);
 }
 
-class Buffer{
+class Buffer {
     int Save(string bmpfile);
     void Draw(int x, int y, int width, int height, int blending = 1);
     void DrawRect(int x, int y, int width, int height, int srcx, int srcy, int srcwidth, int srcheight, int blending = 1);
@@ -589,11 +586,11 @@ class Buffer{
     void WritePixelFast(int y, int argb, int buffer);
 }
 
-class Font{
+class Font {
     void Free();
 }
 
-class Movie{
+class Movie {
     int Draw(int x = 0, int y = 0, int w = -1, int h = -1);
     int get_Width() const property;
     int get_Height() const property;
@@ -601,7 +598,7 @@ class Movie{
     void Close();
 }
 
-class Image{
+class Image {
     B3D::Image@ Copy(int flags = 0);
     void Free();
     int Save(string bmpfile, int frame = 0);
@@ -628,10 +625,10 @@ class Image{
     int RectOverlaps(int x, int y, int rectX, int rectY, int rectWidth, int rectHeight);
 }
 
-class Matrix{
+class Matrix {
 }
 
-class Texture{
+class Texture {
     void Free();
     void SetBlend(int blend);
     void SetCoords(int coords);
@@ -649,7 +646,7 @@ class Texture{
     B3D::Buffer@ GetBuffer(int frame = 0);
 }
 
-class Effect{
+class Effect {
     void Free();
     int SetTexture(string var, B3D::Texture@ tex);
     int SetTechnique(string var);
@@ -665,7 +662,7 @@ class Effect{
     void SetMatrixArray(string var, B3D::Bank@ bnk);
 }
 
-class Brush{
+class Brush {
     void Free();
     void SetColor(float red, float green, float blue);
     void SetAlpha(float alpha);
@@ -678,7 +675,7 @@ class Brush{
     void SetFX(int fx);
 }
 
-class Surface{
+class Surface {
     B3D::Brush@ get_Brush() const property;
     void Clear(int clearVertices = 1, int clearTriangles = 1);
     void Paint(B3D::Brush@ brush);
@@ -706,7 +703,7 @@ class Surface{
     int GetTriangleVertex(int index, int vertex);
 }
 
-class Entity{
+class Entity {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Entity@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -757,7 +754,6 @@ class Entity{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -793,7 +789,7 @@ class Entity{
     const B3D::Listener@ opCast() const;
 }
 
-class Model{
+class Model {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Model@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -844,7 +840,6 @@ class Model{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -899,7 +894,7 @@ class Model{
     const B3D::Terrain@ opCast() const;
 }
 
-class Mesh{
+class Mesh {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Mesh@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -950,7 +945,6 @@ class Mesh{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1019,7 +1013,7 @@ class Mesh{
     void GetBox(float&out, float&out, float&out, float&out, float&out, float&out);
 }
 
-class Camera{
+class Camera {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Camera@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1070,7 +1064,6 @@ class Camera{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1122,7 +1115,7 @@ class Camera{
     int InView(B3D::Entity@ camera);
 }
 
-class Light{
+class Light {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Light@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1173,7 +1166,6 @@ class Light{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1205,7 +1197,7 @@ class Light{
     void SetConeAngles(float innerAngle, float outerAngle);
 }
 
-class Pivot{
+class Pivot {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Pivot@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1256,7 +1248,6 @@ class Pivot{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1284,7 +1275,7 @@ class Pivot{
     const B3D::Entity@ opImplCast() const;
 }
 
-class Sprite{
+class Sprite {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Sprite@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1335,7 +1326,6 @@ class Sprite{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1386,7 +1376,7 @@ class Sprite{
     void SetViewMode(int viewMode);
 }
 
-class Plane{
+class Plane {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Plane@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1437,7 +1427,6 @@ class Plane{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1484,7 +1473,7 @@ class Plane{
     const B3D::Model@ opImplCast() const;
 }
 
-class Terrain{
+class Terrain {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Terrain@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1535,7 +1524,6 @@ class Terrain{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1590,7 +1578,7 @@ class Terrain{
     void Modify(int terrainX, int terrainZ, float height, int realtime = 0);
 }
 
-class Listener{
+class Listener {
     B3D::Channel@ EmitSound(B3D::Sound@ entity);
     B3D::Listener@ Copy(B3D::Entity@ = null);
     float GetX(int global = 0, float tween = 1);
@@ -1641,7 +1629,6 @@ class Listener{
     void SetAnimTime(float time, int animSeq = 0);
     void Animate(int mode = 1, float speed = 1, int sequence = 0, float transition = 0);
     void SetAnimKey(int frame, int posKey = 1, int rotKey = 1, int scaleKey = 1);
-    int LoadAnimSeq(string file);
     int AddAnimSeq(int length);
     int ExtractAnimSeq(int firstFrame, int lastFrame, int animSeq = 0);
     int get_AnimSeq() const property;
@@ -1669,7 +1656,7 @@ class Listener{
     const B3D::Entity@ opImplCast() const;
 }
 
-class Timer{
+class Timer {
     int Wait();
     void Free();
 }
@@ -1677,7 +1664,21 @@ class Timer{
 
 namespace CB {
 
-class Waypoint{
+class Sound {
+    void Free();
+    B3D::Channel@ Play();
+}
+
+class Stream {
+    void Stop();
+    void SetVolume(float volume, bool isSFX = false);
+    void SetPan(float pan);
+    void UpdateOrigin(B3D::Camera@ cam, B3D::Entity@ entity, float range = 10, float volume = 1);
+    void SetPaused(bool paused);
+    bool get_IsPlaying() property;
+}
+
+class Waypoint {
     B3D::Pivot@ Object;
     Door@ Door;
     Room@ Room;
@@ -1695,7 +1696,7 @@ class Waypoint{
     void InsertBefore(CB::Waypoint@);
 }
 
-class NPC{
+class NPC {
     B3D::Entity@ Object;
     B3D::Entity@ Object2;
     B3D::Entity@ Object3;
@@ -1791,7 +1792,7 @@ class NPC{
     void ChangeNPCTexture(int textureID);
 }
 
-class Room{
+class Room {
     int Zone;
     int Found;
     B3D::Pivot@ Object;
@@ -1847,7 +1848,7 @@ class Room{
     void InsertBefore(CB::Room@);
 }
 
-class Door{
+class Door {
     B3D::Mesh@ Object;
     B3D::Mesh@ Object2;
     B3D::Mesh@ FrameObject;
@@ -1881,7 +1882,7 @@ class Door{
     void InsertBefore(CB::Door@);
 }
 
-class TempItem{
+class TempItem {
     string Name;
     float X;
     float Y;
@@ -1901,7 +1902,7 @@ class TempItem{
     void InsertBefore(CB::TempItem@);
 }
 
-class TempDoor{
+class TempDoor {
     int Dir;
     int KeyCard;
     string Code;
@@ -1933,7 +1934,7 @@ class TempDoor{
     void InsertBefore(CB::TempDoor@);
 }
 
-class RoomTemplate{
+class RoomTemplate {
     B3D::Pivot@ Object;
     int ID;
     string ObjectPath;
@@ -1973,7 +1974,7 @@ class RoomTemplate{
     void InsertBefore(CB::RoomTemplate@);
 }
 
-class TempWaypoint{
+class TempWaypoint {
     float X;
     float Y;
     float Z;
@@ -1985,7 +1986,7 @@ class TempWaypoint{
     void InsertBefore(CB::TempWaypoint@);
 }
 
-class Forest{
+class Forest {
     carray<B3D::Mesh@> TileMesh;
     carray<B3D::Entity@> DetailMesh;
     carray<int> Grid;
@@ -2000,7 +2001,7 @@ class Forest{
     void InsertBefore(CB::Forest@);
 }
 
-class MaintenanceTunnel{
+class MaintenanceTunnel {
     carray<int> Grid;
     carray<int> Angles;
     carray<B3D::Pivot@> Meshes;
@@ -2013,7 +2014,7 @@ class MaintenanceTunnel{
     void InsertBefore(CB::MaintenanceTunnel@);
 }
 
-class Decal{
+class Decal {
     B3D::Sprite@ Object;
     float SizeChange;
     float Size;
@@ -2041,7 +2042,7 @@ class Decal{
 
 namespace CB::Console {
 
-class Msg{
+class Msg {
     string Text;
     bool IsCommand;
     int R;
@@ -2057,7 +2058,7 @@ class Msg{
 
 namespace CB {
 
-class Event{
+class Event {
     string Name;
     Room@ Room;
     float State;
