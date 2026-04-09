@@ -699,6 +699,8 @@ Function RegisterEvent()
     RegisterTypeField("Event", "string String", %Events\EventStr)
     RegisterTypeField("Event", "B3D::Image@ Image", %Events\img)
 
+    RegisterGlobalFunction("Event@ CreateEvent(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
+
     RegisterGlobalFunction("float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignorerotation = true)", @UpdateElevators)
 End Function
 

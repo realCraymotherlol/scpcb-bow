@@ -13,6 +13,7 @@ Delete Each Hooks
 Global Initialize.Hooks = CreateHook("Hook_Initialize")
 Global SaveOptions.Hooks = CreateHook("Hook_SaveOptions")
 Global Update.Hooks = CreateHook("Hook_Update")
+Global InitializeEvents.Hooks = CreateHook("Hook_InitializeEvents")
 Global UpdateEvent.Hooks = CreateHook("Hook_UpdateEvent")
 Global FillRoom.Hooks = CreateHook("Hook_FillRoom")
 Global PostFillRoom.Hooks = CreateHook("Hook_PostFillRoom")

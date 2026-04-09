@@ -1,4 +1,4 @@
-Const VersionNumber$ = "1.3.12.1-s1"
+Const VersionNumber$ = "1.3.12.1-s2"
 ;Only change this if the version given isn't working with the current build version - ENDSHN
 Const CompatibleNumber$ = "1.3.12"
 
@@ -2841,6 +2841,11 @@ End Function
 Function InitEvents()
 	Local e.Events
 	
+	If InitializeEvents\Subscribers > 0 Then
+		PrepareFunction(0)
+		CallHook(InitializeEvents)
+	EndIf
+
 	CreateEvent("173", "173", 0)
 	CreateEvent("alarm", "start", 0)
 	

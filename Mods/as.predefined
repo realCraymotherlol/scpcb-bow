@@ -410,6 +410,7 @@ CB::Event@ get_Last() property;
 }
 
 namespace CB {
+Event@ CreateEvent(string eventName, string roomName, int id, float probability = 0);
 float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignorerotation = true);
 }
 
