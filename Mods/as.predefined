@@ -1687,15 +1687,15 @@ class Stream {
 
 class Waypoint {
     B3D::Pivot@ Object;
-    Door@ Door;
-    Room@ Room;
+    CB::Door@ Door;
+    CB::Room@ Room;
     int State;
-    carray<Waypoint@> Connected;
+    carray<CB::Waypoint@> Connected;
     carray<float> Distance;
     float FCost;
     float GCost;
     float HCost;
-    Waypoint@ Parent;
+    CB::Waypoint@ Parent;
     void Delete();
     CB::Waypoint@ get_Next() const property;
     CB::Waypoint@ get_Previous() const property;
@@ -1735,12 +1735,12 @@ class NPC {
     float PrevX;
     float PrevY;
     float PrevZ;
-    NPC@ Target;
+    CB::NPC@ Target;
     int TargetID;
     float EnemyX;
     float EnemyY;
     float EnemyZ;
-    carray<Waypoint@> Path;
+    carray<CB::Waypoint@> Path;
     int PathStatus;
     float PathTimer;
     int PathLocation;
@@ -1751,7 +1751,7 @@ class NPC {
     float GravityMultiplier;
     float MaxGravity;
     int MTFVariant;
-    NPC@ MTFLeader;
+    CB::NPC@ MTFLeader;
     int IsDead;
     float BlinkTimer;
     int IgnorePlayer;
@@ -1807,10 +1807,10 @@ class Room {
     float Y;
     float Z;
     int Angle;
-    RoomTemplate@ Template;
+    CB::RoomTemplate@ Template;
     float Distance;
     B3D::Channel@ SoundCHN;
-    Forest@ Forest;
+    CB::Forest@ Forest;
     carray<int> SoundEmitter;
     carray<B3D::Pivot@> SoundEmitterObj;
     carray<float> SoundEmitterRange;
@@ -1820,11 +1820,11 @@ class Room {
     carray<B3D::Sprite@> LightSprites;
     carray<B3D::Entity@> Objects;
     carray<B3D::Entity@> Levers;
-    carray<Door@> Doors;
-    carray<NPC@> NPC;
-    MaintenanceTunnel@ MaintenanceTunnel;
-    carray<Room@> Adjacent;
-    carray<Door@> AdjacentDoor;
+    carray<CB::Door@> Doors;
+    carray<CB::NPC@> NPC;
+    CB::MaintenanceTunnel@ MaintenanceTunnel;
+    carray<CB::Room@> Adjacent;
+    carray<CB::Door@> AdjacentDoor;
     carray<B3D::Texture@> Textures;
     int MaxLights;
     carray<int> LightSpriteHidden;
@@ -1869,7 +1869,7 @@ class Door {
     int Timer;
     float TimerState;
     int KeyCard;
-    Room@ Room;
+    CB::Room@ Room;
     bool DisableWaypoint;
     float Distance;
     B3D::Channel@ Channel;
@@ -1877,7 +1877,7 @@ class Door {
     int ID;
     int Level;
     bool AutoClose;
-    Door@ LinkedDoor;
+    CB::Door@ LinkedDoor;
     bool IsElevatorDoor;
     bool MTFClose;
     bool NPCCalledElevator;
@@ -1901,7 +1901,7 @@ class TempItem {
     float State;
     float State2;
     float Chance;
-    TempItem@ Successor;
+    CB::TempItem@ Successor;
     void Delete();
     CB::TempItem@ get_Next() const property;
     CB::TempItem@ get_Previous() const property;
@@ -1933,7 +1933,7 @@ class TempDoor {
     float Button2RotX;
     float Button2RotY;
     float Button2RotZ;
-    TempDoor@ Successor;
+    CB::TempDoor@ Successor;
     void Delete();
     CB::TempDoor@ get_Next() const property;
     CB::TempDoor@ get_Previous() const property;
@@ -1964,8 +1964,8 @@ class RoomTemplate {
     int TempTriggerboxAmount;
     carray<B3D::Mesh@> TempTriggerbox;
     carray<string> TempTriggerboxName;
-    TempItem@ FirstTempItem;
-    TempDoor@ FirstTempDoor;
+    CB::TempItem@ FirstTempItem;
+    CB::TempDoor@ FirstTempDoor;
     bool UseLightCones;
     bool DisableOverlapCheck;
     float MinX;
@@ -1985,7 +1985,7 @@ class TempWaypoint {
     float X;
     float Y;
     float Z;
-    RoomTemplate@ RoomTemplate;
+    CB::RoomTemplate@ RoomTemplate;
     void Delete();
     CB::TempWaypoint@ get_Next() const property;
     CB::TempWaypoint@ get_Previous() const property;
@@ -2013,7 +2013,7 @@ class MaintenanceTunnel {
     carray<int> Angles;
     carray<B3D::Pivot@> Meshes;
     carray<B3D::Pivot@> Entities;
-    carray<Waypoint@> Waypoints;
+    carray<CB::Waypoint@> Waypoints;
     void Delete();
     CB::MaintenanceTunnel@ get_Next() const property;
     CB::MaintenanceTunnel@ get_Previous() const property;
@@ -2067,7 +2067,7 @@ namespace CB {
 
 class Event {
     string Name;
-    Room@ Room;
+    CB::Room@ Room;
     float State;
     float State2;
     float State3;
