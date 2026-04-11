@@ -17,11 +17,52 @@ using namespace B3D;
 
 float configuredFOV = -1.f;
 
+array<bool> keyDownCache;
+
+bool IsKeyUp(int key) {
+    if (keyDownCache.Length < key + 1) keyDownCache.Resize(key + 1);
+
+    bool actuallyDown = KeyDown(key);
+    bool cachedDown = keyDownCache[key];
+    if (actuallyDown != cachedDown) {
+        keyDownCache[key] = actuallyDown;
+        return actuallyDown == false;
+    }
+    return false;
+}
+
+bool wasCrouched = true;
+
+CB::Sound@ bonk;
+
 void Hook_Update() {
     if (configuredFOV == -1.f) {
         configuredFOV = Options::FOV;
     }
     Options::FOV = configuredFOV * (1.f + Player::CurrentSpeed * 5);
+    if (IsKeyUp(Options::KeyBlink)) {
+        configuredFOV += 10;
+    }
+    if (Player::Crouch != wasCrouched) {
+        if (wasCrouched) {
+            Player::Collider.SetRadius(0.15, 1.0);
+            Player::Collider.Move(0, 1, 0);
+        } else {
+            Player::Collider.SetRadius(0.15, 0.3);
+        }
+        wasCrouched = Player::Crouch;
+    }
+    if (Player::CrouchState > 0.0 && !Player::Crouch) {
+        for (int i = 1; i <= Player::Collider.CountCollisions(); i++) {
+            if (Player::Collider.CollisionY(i) > Player::Collider.GetY() + 0.1) {
+                Player::Crouch = true;
+                if (bonk == null) {
+                    @bonk = CB::Sound("SFX\\bonk.mp3");
+                }
+                bonk.Play();
+            }
+        }
+    }
 }
 
 void Hook_CombineItems(Item@ dragged, Item@ onto) {
@@ -35,7 +76,7 @@ void Hook_CombineItems(Item@ dragged, Item@ onto) {
     int res = lvl1.ParseInt() + lvl2.ParseInt();
     if (res > 6) return;
 
-    Item@ new = Item("key" + ToString(res), Player::Camera.GetX(1), Player::Camera.GetY(1), Player::Camera.GetZ(1));
+    Item@ new = Item("key" + ToString(res), Player::Camera.GetX(true), Player::Camera.GetY(true), Player::Camera.GetZ(true));
     dragged.Remove(true);
     onto.Remove(true);
 }
