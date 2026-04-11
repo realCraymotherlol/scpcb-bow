@@ -125,43 +125,16 @@ Function PlaySound_Strict%(sndHandle%)
 	If snd <> Null Then
 		Local shouldPlay% = True
 		For i = 0 To 31
-			If snd\channels[i] <> 0 Then
-				If Not ChannelPlaying(snd\channels[i]) Then
-					If snd\internalHandle = 0 Then
-						If FileType(snd\name) <> 1 Then
-							CreateConsoleMsg("Sound " + Chr(34) + snd\name + Chr(34) + " not found.")
-							If ConsoleOpening
-								ConsoleOpen = True
-							EndIf
-						Else
-							If EnableSFXRelease Then snd\internalHandle = LoadSound(DetermineModdedSoundPath(snd\name))
-						EndIf
-						If snd\internalHandle = 0 Then
-							CreateConsoleMsg("Failed to load Sound: " + Chr(34) + snd\name + Chr(34))
-							If ConsoleOpening
-								ConsoleOpen = True
-							EndIf
-						EndIf
-					EndIf
-					If ConsoleFlush Then
-						snd\channels[i] = PlaySound(ConsoleFlushSnd)
-					Else
-						snd\channels[i] = PlaySound(snd\internalHandle)
-					EndIf
-					ChannelVolume snd\channels[i],SFXVolume#
-					QueueSubtitle(snd\name, snd\internalHandle, snd\channels[i])
-					snd\releaseTime = MilliSecs()+5000 ;release after 5 seconds
-					Return snd\channels[i]
-				EndIf
-			Else
+			If snd\channels[i] = 0 Lor (Not ChannelPlaying(snd\channels[i])) Then
 				If snd\internalHandle = 0 Then
-					If FileType(snd\name) <> 1 Then
+					Local usedPath$ = DetermineModdedSoundPath(snd\name)
+					If FileType(usedPath) <> 1 Then
 						CreateConsoleMsg("Sound " + Chr(34) + snd\name + Chr(34) + " not found.")
 						If ConsoleOpening
 							ConsoleOpen = True
 						EndIf
 					Else
-						If EnableSFXRelease Then snd\internalHandle = LoadSound(DetermineModdedSoundPath(snd\name))
+						If EnableSFXRelease Then snd\internalHandle = LoadSound(usedPath)
 					EndIf
 						
 					If snd\internalHandle = 0 Then
