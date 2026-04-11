@@ -832,8 +832,11 @@ Function UpdateSubtitles(factor#)
 			If SubBox\lines < 20 Then
 				Local noLines% = SubBox\lines <= 0
 
+				; If we don't load this into a local, the check will spuriously fail.
+				; This is incredibly obscure and I currently believe it may be the result of some x86 asm generation bug.
+				Local sw% = StringWidth(txtLine)
 				; Split long lines of text into multiple subtitles
-				If StringWidth(txtLine) > SubBox\screenWidth-10 Then
+				If sw >= SubBox\screenWidth-10 Then
 					TryCreateSplitSubtitleMsg(queue, txtLine, 10)
 				Else ; No need to split
 					TryCreateSubtitleMsg(queue, txtLine)
