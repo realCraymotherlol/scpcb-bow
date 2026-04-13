@@ -2111,11 +2111,86 @@ Function FillRoom(r.Rooms)
 	
 	Local t1;, Bump	
 
+	For lt.lighttemplates = Each LightTemplates
+		If lt\roomtemplate = r\RoomTemplate Then
+			newlt = AddLight(r, r\x+lt\x, r\y+lt\y, r\z+lt\z, lt\ltype, lt\range, lt\r, lt\g, lt\b)
+			If newlt <> 0 Then 
+				If lt\ltype = 3 Then
+					LightConeAngles(newlt, lt\innerconeangle, lt\outerconeangle)
+					RotateEntity(newlt, lt\pitch, lt\yaw, 0)
+				EndIf
+			EndIf
+		EndIf
+	Next
+	
+	For ts.tempscreens = Each TempScreens
+		If ts\roomtemplate = r\RoomTemplate Then
+			CreateScreen(r\x+ts\x, r\y+ts\y, r\z+ts\z, ts\imgpath, r)
+		EndIf
+	Next
+	
+	For tw.TempWayPoints = Each TempWayPoints
+		If tw\roomtemplate = r\RoomTemplate Then
+			CreateWaypoint(r\x+tw\x, r\y+tw\y, r\z+tw\z, Null, r)
+		EndIf
+	Next
+	
+	If r\RoomTemplate\TempTriggerboxAmount > 0
+		r\TriggerboxAmount = r\RoomTemplate\TempTriggerboxAmount
+		For i = 0 To r\TriggerboxAmount-1
+			r\Triggerbox[i] = CopyEntity(r\RoomTemplate\TempTriggerbox[i],r\obj)
+			r\TriggerboxName[i] = r\RoomTemplate\TempTriggerboxName[i]
+			DebugLog "Triggerbox found: "+i
+			DebugLog "Triggerbox "+i+" name: "+r\TriggerboxName[i]
+		Next
+	EndIf
+	
+	For i = 0 To MaxRoomEmitters-1
+		If r\RoomTemplate\TempSoundEmitter[i]<>0 Then
+			r\SoundEmitterObj[i]=CreatePivot(r\obj)
+			PositionEntity r\SoundEmitterObj[i], r\x+r\RoomTemplate\TempSoundEmitterX[i],r\y+r\RoomTemplate\TempSoundEmitterY[i],r\z+r\RoomTemplate\TempSoundEmitterZ[i],True
+			EntityParent(r\SoundEmitterObj[i],r\obj)
+			
+			r\SoundEmitter[i] = r\RoomTemplate\TempSoundEmitter[i]
+			r\SoundEmitterRange[i] = r\RoomTemplate\TempSoundEmitterRange[i]
+		EndIf
+	Next
+
+	Local tempIt.TempItems = r\RoomTemplate\FirstTempItem
+	While tempIt <> Null
+		If tempIt\Chance = 1.0 Or Rnd(1.0) < tempIt\Chance Then
+			it.Items = CreateItem(tempIt\Name, r\x + tempIt\X, r\y + tempIt\Y, r\z + tempIt\Z)
+			If tempIt\HasCustomAngle Then
+				RotateEntity(it\collider, tempIt\AngleX, r\angle + tempIt\AngleY, tempIt\AngleZ)
+			EndIf
+			it\state = tempIt\State
+			it\state2 = tempIt\State2
+			EntityType(it\collider, HIT_ITEM)
+			EntityParent(it\collider, r\obj)
+		EndIf
+		tempIt = tempIt\Successor
+	Wend
+
+	Local dt.TempDoors = r\RoomTemplate\FirstTempDoor
+	While dt <> Null
+		Local door.Doors = CreateDoor(r\zone, r\x + dt\X, r\y + dt\Y, r\z + dt\Z, dt\Angle, r, dt\SpawnOpen, dt\Dir, dt\KeyCard, dt\Code)
+		If Not dt\AllowRemoteControl Then
+			door\AutoClose = False
+		EndIf
+		door\locked = dt\Locked
+		If dt\DeleteHalf Then FreeEntity door\obj2 : door\obj2 = 0
+		If dt\Button1PosX <> 0 Lor dt\Button1PosY <> 0 Lor dt\Button1PosZ <> 0 Then PositionEntity(door\buttons[0], r\x + dt\Button1PosX, r\y + dt\Button1PosY, r\z + dt\Button1PosZ, True)
+		If dt\Button1RotX <> 0 Lor dt\Button1RotY <> 0 Lor dt\Button1RotZ <> 0 Then RotateEntity(door\buttons[0], dt\Button1RotX, r\angle + dt\Button1RotY, dt\Button1RotZ, True)
+		If dt\Button2PosX <> 0 Lor dt\Button2PosY <> 0 Lor dt\Button2PosZ <> 0 Then PositionEntity(door\buttons[1], r\x + dt\Button2PosX, r\y + dt\Button2PosY, r\z + dt\Button2PosZ, True)
+		If dt\Button2RotX <> 0 Lor dt\Button2RotY <> 0 Lor dt\Button2RotZ <> 0 Then RotateEntity(door\buttons[1], dt\Button2RotX, r\angle + dt\Button2RotY, dt\Button2RotZ, True)
+		dt = dt\Successor
+	Wend
+
 	If FillRoom\Subscribers > 0 Then
 		PrepareFunction(1)
 		Local rr.Rooms = r ; TODO: Fucking stupid!
 		SetArgObj(0, &rr)
-		CallHook(FillRoom)
+		If CallHook(FillRoom) Then Return
 	EndIf
 	
 	Select r\RoomTemplate\Name
@@ -5483,81 +5558,6 @@ Function FillRoom(r.Rooms)
 			EntityParent r\Levers[0],r\obj
 			;[End Block]
 	End Select
-	
-	For lt.lighttemplates = Each LightTemplates
-		If lt\roomtemplate = r\RoomTemplate Then
-			newlt = AddLight(r, r\x+lt\x, r\y+lt\y, r\z+lt\z, lt\ltype, lt\range, lt\r, lt\g, lt\b)
-			If newlt <> 0 Then 
-				If lt\ltype = 3 Then
-					LightConeAngles(newlt, lt\innerconeangle, lt\outerconeangle)
-					RotateEntity(newlt, lt\pitch, lt\yaw, 0)
-				EndIf
-			EndIf
-		EndIf
-	Next
-	
-	For ts.tempscreens = Each TempScreens
-		If ts\roomtemplate = r\RoomTemplate Then
-			CreateScreen(r\x+ts\x, r\y+ts\y, r\z+ts\z, ts\imgpath, r)
-		EndIf
-	Next
-	
-	For tw.TempWayPoints = Each TempWayPoints
-		If tw\roomtemplate = r\RoomTemplate Then
-			CreateWaypoint(r\x+tw\x, r\y+tw\y, r\z+tw\z, Null, r)
-		EndIf
-	Next
-	
-	If r\RoomTemplate\TempTriggerboxAmount > 0
-		r\TriggerboxAmount = r\RoomTemplate\TempTriggerboxAmount
-		For i = 0 To r\TriggerboxAmount-1
-			r\Triggerbox[i] = CopyEntity(r\RoomTemplate\TempTriggerbox[i],r\obj)
-			r\TriggerboxName[i] = r\RoomTemplate\TempTriggerboxName[i]
-			DebugLog "Triggerbox found: "+i
-			DebugLog "Triggerbox "+i+" name: "+r\TriggerboxName[i]
-		Next
-	EndIf
-	
-	For i = 0 To MaxRoomEmitters-1
-		If r\RoomTemplate\TempSoundEmitter[i]<>0 Then
-			r\SoundEmitterObj[i]=CreatePivot(r\obj)
-			PositionEntity r\SoundEmitterObj[i], r\x+r\RoomTemplate\TempSoundEmitterX[i],r\y+r\RoomTemplate\TempSoundEmitterY[i],r\z+r\RoomTemplate\TempSoundEmitterZ[i],True
-			EntityParent(r\SoundEmitterObj[i],r\obj)
-			
-			r\SoundEmitter[i] = r\RoomTemplate\TempSoundEmitter[i]
-			r\SoundEmitterRange[i] = r\RoomTemplate\TempSoundEmitterRange[i]
-		EndIf
-	Next
-
-	Local tempIt.TempItems = r\RoomTemplate\FirstTempItem
-	While tempIt <> Null
-		If tempIt\Chance = 1.0 Or Rnd(1.0) < tempIt\Chance Then
-			it.Items = CreateItem(tempIt\Name, r\x + tempIt\X, r\y + tempIt\Y, r\z + tempIt\Z)
-			If tempIt\HasCustomAngle Then
-				RotateEntity(it\collider, tempIt\AngleX, r\angle + tempIt\AngleY, tempIt\AngleZ)
-			EndIf
-			it\state = tempIt\State
-			it\state2 = tempIt\State2
-			EntityType(it\collider, HIT_ITEM)
-			EntityParent(it\collider, r\obj)
-		EndIf
-		tempIt = tempIt\Successor
-	Wend
-
-	Local dt.TempDoors = r\RoomTemplate\FirstTempDoor
-	While dt <> Null
-		Local door.Doors = CreateDoor(r\zone, r\x + dt\X, r\y + dt\Y, r\z + dt\Z, dt\Angle, r, dt\SpawnOpen, dt\Dir, dt\KeyCard, dt\Code)
-		If Not dt\AllowRemoteControl Then
-			door\AutoClose = False
-		EndIf
-		door\locked = dt\Locked
-		If dt\DeleteHalf Then FreeEntity door\obj2 : door\obj2 = 0
-		If dt\Button1PosX <> 0 Lor dt\Button1PosY <> 0 Lor dt\Button1PosZ <> 0 Then PositionEntity(door\buttons[0], r\x + dt\Button1PosX, r\y + dt\Button1PosY, r\z + dt\Button1PosZ, True)
-		If dt\Button1RotX <> 0 Lor dt\Button1RotY <> 0 Lor dt\Button1RotZ <> 0 Then RotateEntity(door\buttons[0], dt\Button1RotX, r\angle + dt\Button1RotY, dt\Button1RotZ, True)
-		If dt\Button2PosX <> 0 Lor dt\Button2PosY <> 0 Lor dt\Button2PosZ <> 0 Then PositionEntity(door\buttons[1], r\x + dt\Button2PosX, r\y + dt\Button2PosY, r\z + dt\Button2PosZ, True)
-		If dt\Button2RotX <> 0 Lor dt\Button2RotY <> 0 Lor dt\Button2RotZ <> 0 Then RotateEntity(door\buttons[1], dt\Button2RotX, r\angle + dt\Button2RotY, dt\Button2RotZ, True)
-		dt = dt\Successor
-	Wend
 
 	If PostFillRoom\Subscribers > 0 Then
 		PrepareFunction(1)

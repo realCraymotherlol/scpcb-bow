@@ -1,4 +1,4 @@
-Const VersionNumber$ = "1.3.12.1-s4"
+Const VersionNumber$ = "1.3.12.1-s5"
 ;Only change this if the version given isn't working with the current build version - ENDSHN
 Const CompatibleNumber$ = "1.3.12"
 
@@ -2847,7 +2847,7 @@ Function InitEvents()
 	
 	If InitializeEvents\Subscribers > 0 Then
 		PrepareFunction(0)
-		CallHook(InitializeEvents)
+		If CallHook(InitializeEvents) Then Return
 	EndIf
 
 	CreateEvent("173", "173", 0)
@@ -4448,6 +4448,12 @@ Global MoveX%, MoveZ%
 
 Function MovePlayer()
 	CatchErrors("Uncaught (MovePlayer)")
+
+	If MovePlayer\Subscribers > 0 Then
+		PrepareFunction(0)
+		If CallHook(MovePlayer) Then Return
+	EndIf
+
 	Local Sprint# = 1.0, Speed# = 0.018, i%, angle#
 	
 	If SuperMan Then
@@ -7386,6 +7392,11 @@ End Function
 
 Function DrawHUD()
 	If Not HUDenabled Then Return
+
+	If DrawHUD\Subscribers > 0 Then
+		PrepareFunction(0)
+		If CallHook(DrawHUD) Then Return
+	EndIf
 
 	If SpeedRunMode Then DrawTimer()
 

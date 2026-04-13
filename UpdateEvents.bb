@@ -18,7 +18,7 @@ Function UpdateEvents()
 		If UpdateEvent\Subscribers > 0 Then
 			PrepareFunction(1)
 			SetArgObj(0, &e)
-			CallHook(UpdateEvent)
+			If CallHook(UpdateEvent) Then Continue
 		EndIf
 
 		Select e\EventName

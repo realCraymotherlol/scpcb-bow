@@ -701,7 +701,7 @@ Function UpdateNPCs()
 		If UpdateNPC\Subscribers > 0 Then
 			PrepareFunction(1)
 			SetArgObj(0, &n)
-			CallHook(UpdateNPC)
+			If CallHook(UpdateNPC) Then Continue
 		EndIf
 
 		Select n\NPCtype

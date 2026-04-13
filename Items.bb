@@ -425,6 +425,12 @@ Function UpdateItems()
 	
 	ClosestItem = Null
 	For i.Items = Each Items
+		If UpdateItem\Subscribers > 0 Then
+			PrepareFunction(1)
+			SetArgObj(0, &i)
+			If CallHook(UpdateItem) Then Continue
+		EndIf
+
 		i\Dropped = 0
 		
 		If (Not i\Picked) Then
@@ -555,7 +561,7 @@ Function PickItem(item.Items)
 					PrepareFunction(1)
 					Local ii.Items = item
 					SetArgObj(0, &ii)
-					CallHook(PickItem)
+					If CallHook(PickItem) Then Exit
 				EndIf
 
 				Select item\itemtemplate\name
@@ -712,7 +718,7 @@ Function DropItem(item.Items,playdropsound%=True)
 		PrepareFunction(1)
 		Local ii.Items = item
 		SetArgObj(0, &ii)
-		CallHook(DropItem)
+		If CallHook(DropItem) Then Return
 	EndIf
 
 	Select item\itemtemplate\name
