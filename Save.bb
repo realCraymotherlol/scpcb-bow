@@ -1194,11 +1194,14 @@ Function LoadGame(file$)
 		EndIf
 	Next
 	
-	;If ReadInt(f) <> 994 Then RuntimeErrorExt("Couldn't load the game, save file corrupted (error 4)")
-	
-	If ReadInt(f)<>994
+	temp = ReadInt(f)
+	If temp=994
+		; Console not used
+	Else If temp=100
 		UsedConsole = True
 		DebugLog "Used Console"
+	Else
+		RuntimeErrorExt("Couldn't load the game, save file corrupted (error 4)")
 	EndIf
 	
 	CameraFogFar = ReadFloat(f)
@@ -1911,11 +1914,14 @@ Function LoadGameQuick(file$)
 		EndIf
 	Next
 	
-	;If ReadInt(f) <> 994 Then RuntimeErrorExt("Couldn't load the game, save file corrupted (error 4)")
-	
-	If ReadInt(f)<>994
+	temp = ReadInt(f)
+	If temp=994
+		; Console not used
+	Else If temp=100
 		UsedConsole = True
 		DebugLog "Used Console"
+	Else
+		RuntimeErrorExt("Couldn't load the game, save file corrupted (error 4)")
 	EndIf
 	
 	If 0 Then 
