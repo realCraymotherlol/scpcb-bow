@@ -129,17 +129,22 @@ Global ModsEnabled% = GetOptionInt("general", "enable mods") And (Not HasCLIFlag
 If ModsEnabled Then ReloadMods()
 
 Include "ScriptManager.bb"
+Global LogFile = WriteFile("latest.log")
 SetMessageCallback(@ScriptMessageCallback)
 LoadScripts()
 
 Function ScriptMessageCallback(severity%, line%, column%, section$, message$)
 	Local r%, g%, b%
+	Local prefix$
 	Select severity
-		Case 0 r = 255 : g = 0 : b = 0
-		Case 1 r = 255 : g = 255 : b = 0
-		Case 1 r = 255 : g = 255 : b = 255
+		Case 0 r = 255 : g = 0 : b = 0 : prefix = "[Error]"
+		Case 1 r = 255 : g = 255 : b = 0 : prefix = "[Warning]"
+		Case 2 r = 255 : g = 255 : b = 255 : prefix = "[Info]"
 	End Select
-	CreateConsoleMsg("[AngelScript] " + section + " (" + line + "," + column + "): " + message, r, g, b)
+	Local txt$ = section + " (" + line + "," + column + "): " + message
+	CreateConsoleMsg("[AngelScript] " + txt, r, g, b)
+	WriteLine(LogFile, prefix + " " + txt)
+	FlushFile(LogFile)
 End Function
 
 Function LoadScripts()

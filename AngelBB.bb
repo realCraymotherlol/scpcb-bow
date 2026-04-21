@@ -545,6 +545,7 @@ Function RegisterFilesystem()
     RegisterObjectMethod("File", "void Close()", @CloseFile)
     RegisterObjectMethod("File", "int get_Position() const property", @FilePos)
     RegisterObjectMethod("File", "int set_Position(int pos) property", @SeekFile)
+    RegisterObjectMethod("File", "void Flush()", @FlushFile)
 
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::File") Else SetDefaultNamespace("File")
