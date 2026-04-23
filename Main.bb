@@ -702,6 +702,7 @@ Function UpdateConsole()
 							CreateConsoleMsg("- heal")
 							CreateConsoleMsg("- infinitestamina")
 							CreateConsoleMsg("- sanic")
+							CreateConsoleMsg("- blinkeffect [strength] [timer]")
 							CreateConsoleMsg("- notarget")
 							CreateConsoleMsg("- teleport [room name] [index]")
 							CreateConsoleMsg("- roomlist")
@@ -871,6 +872,18 @@ Function UpdateConsole()
 							CreateConsoleMsg("******************************")
 							CreateConsoleMsg("Will play tracks in .ogg/.wav format")
 							CreateConsoleMsg("from "+Chr(34)+"SFX\Music\Custom\"+Chr(34)+".")
+							CreateConsoleMsg("******************************")
+						Case "setblinkeffect", "blinkeffect"
+							CreateConsoleMsg("HELP - blinkeffect")
+							CreateConsoleMsg("******************************")
+							CreateConsoleMsg("Sets the blink effect and its timer.")
+							CreateConsoleMsg("The blink effect scales how fast the blink meter")
+							CreateConsoleMsg("depletes. A value of two makes it drain twice")
+							CreateConsoleMsg("as fast, while a value of 0 disables blinking.")
+							CreateConsoleMsg("The timer is specified in seconds and controls")
+							CreateConsoleMsg("how long the effect will last.")
+							CreateConsoleMsg("If a timer value is not specified, the effect")
+							CreateConsoleMsg("will last indefinitely.")
 							CreateConsoleMsg("******************************")
 						Case "omni"
 							CreateConsoleMsg("HELP - omni")
@@ -1688,12 +1701,17 @@ Function UpdateConsole()
 					Curr106\State = 0
 					Curr106\Idle = False
 					;[End Block]
-				Case "setblinkeffect"
+				Case "setblinkeffect", "blinkeffect"
 					;[Block]
 					args$ = Lower(Right(ConsoleInput, Len(ConsoleInput) - Instr(ConsoleInput, " ")))
-					BlinkEffect = Float(Left(args, Len(args) - Instr(args, " ")))
-					BlinkEffectTimer = Float(Right(args, Len(args) - Instr(args, " ")))
-					CreateConsoleMsg("Set BlinkEffect to: " + BlinkEffect + "and BlinkEffect timer: " + BlinkEffectTimer)
+					BlinkEffect = Float(Piece(args, 1, " "))
+					Local timerStr$ = Piece(args, 2, " ")
+					If timerStr = "" Then
+						If BlinkEffect = 1 Then BlinkEffectTimer = 0 Else BlinkEffectTimer = Infinity
+					Else
+						BlinkEffectTimer = Float(timerStr)
+					EndIf
+					CreateConsoleMsg("Set BlinkEffect to: " + BlinkEffect + " and BlinkEffect timer: " + BlinkEffectTimer)
 					;[End Block]
 				Case "omni"
 					;[Block]
