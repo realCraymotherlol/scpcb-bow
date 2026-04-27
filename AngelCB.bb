@@ -126,9 +126,8 @@ Function RegisterCBAudio()
 
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::Sound") Else SetDefaultNamespace("Sound")
-
+    RegisterGlobalFunction("CB::Sound@ LoadTemporary(string file)", @LoadTempSound)
     SetDefaultNamespace(ns)
-
 End Function
 
 Function RegisterCBInput()
@@ -445,11 +444,11 @@ Function RegisterNPC()
 
     RegisterTypeField("NPC", "float Angle", %NPCs\Angle)
 
-    RegisterTypeField("NPC", "B3D::Sound@ Sound", %NPCs\Sound)
+    RegisterTypeField("NPC", "Sound@ Sound", %NPCs\Sound)
     RegisterTypeField("NPC", "B3D::Channel@ Channel", %NPCs\SoundChn)
     RegisterTypeField("NPC", "float SoundTimer", %NPCs\SoundTimer)
 
-    RegisterTypeField("NPC", "B3D::Sound@ Sound2", %NPCs\Sound2)
+    RegisterTypeField("NPC", "Sound@ Sound2", %NPCs\Sound2)
     RegisterTypeField("NPC", "B3D::Channel@ Channel2", %NPCs\SoundChn2)
 
     RegisterTypeField("NPC", "float Speed", %NPCs\Speed)
@@ -840,14 +839,23 @@ Function RegisterEvent()
     RegisterTypeField("Event", "float State3", %Events\EventState3)
     RegisterTypeField("Event", "B3D::Channel@ Channel", %Events\SoundCHN)
     RegisterTypeField("Event", "B3D::Channel@ Channel2", %Events\SoundCHN2)
+    RegisterTypeField("Event", "CB::Sound@ Sound", %Events\Sound)
+    RegisterTypeField("Event", "CB::Sound@ Sound2", %Events\Sound2)
     RegisterTypeField("Event", "int ChannelIsStream", %Events\SoundCHN_isStream)
     RegisterTypeField("Event", "int Channel2IsStream", %Events\SoundCHN2_isStream)
     RegisterTypeField("Event", "string String", %Events\EventStr)
     RegisterTypeField("Event", "B3D::Image@ Image", %Events\img)
 
-    RegisterGlobalFunction("Event@ CreateEvent(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Event") Else SetDefaultNamespace("Event")
+
+    RegisterGlobalFunction("CB::Sound@ LoadSound(Event@ event, string file, int num=0)", @LoadEventSound)
+
+    RegisterGlobalFunction("Event@ Create(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
 
     RegisterGlobalFunction("float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignorerotation = true)", @UpdateElevators)
+
+    SetDefaultNamespace(ns)
 End Function
 
 Global HasRegisteredCB%
