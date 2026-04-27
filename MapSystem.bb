@@ -2072,7 +2072,6 @@ Function CreateRoom.Rooms(zone%, roomshape%, x#, y#, z#, angle%, name$)
 				r\angle = angle
 				If angle <> 0 Then TurnEntity(r\obj, 0, angle, 0)
 				CalculateRoomExtents(r)
-				SetupTriggerBoxes(r)
 				Return r
 			EndIf
 		Next
@@ -2116,7 +2115,6 @@ Function CreateRoom.Rooms(zone%, roomshape%, x#, y#, z#, angle%, name$)
 					r\angle = angle
 					If angle <> 0 Then TurnEntity(r\obj, 0, angle, 0)
 					CalculateRoomExtents(r)
-					SetupTriggerBoxes(r)
 					Return r
 				End If
 			EndIf
@@ -7611,6 +7609,10 @@ Function CreateMap(loadingstart,loadingcount#)
 	
 	; print all overlapping rooms to debuglog
 	;ReportOverlaps()
+
+	For r.Rooms = Each Rooms
+		SetupTriggerBoxes(r)
+	Next
 	
 	If DebugMapGen Then
 		For x = 0 To MapWidth - 1
