@@ -9414,8 +9414,8 @@ Function NullGame(playbuttonsfx%=True)
 	Delete Each Items
 
 	For itt.ItemTemplates = Each ItemTemplates
-		FreeImage(itt\invimg)
-		If itt\invimg2 <> 0 Then FreeImage(itt\invimg2)
+		FreeImageHUDScaled(itt\invimg)
+		If itt\invimg2 <> 0 Then FreeImageHUDScaled(itt\invimg2)
 		Delete itt
 	Next
 
