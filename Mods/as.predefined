@@ -783,12 +783,20 @@ class Entity {
     int get_Mask() const property;
     B3D::Model@ opCast();
     const B3D::Model@ opCast() const;
+    B3D::Mesh@ opCast();
+    const B3D::Mesh@ opCast() const;
     B3D::Camera@ opCast();
     const B3D::Camera@ opCast() const;
     B3D::Light@ opCast();
     const B3D::Light@ opCast() const;
     B3D::Pivot@ opCast();
     const B3D::Pivot@ opCast() const;
+    B3D::Sprite@ opCast();
+    const B3D::Sprite@ opCast() const;
+    B3D::Plane@ opCast();
+    const B3D::Plane@ opCast() const;
+    B3D::Terrain@ opCast();
+    const B3D::Terrain@ opCast() const;
     B3D::Listener@ opCast();
     const B3D::Listener@ opCast() const;
     CB::ParticleEmitter@ opCast();
@@ -974,6 +982,8 @@ class Mesh {
     string get_Class() const property;
     void set_Mask(int mask) property;
     int get_Mask() const property;
+    B3D::Entity@ opImplCast();
+    const B3D::Entity@ opImplCast() const;
     float get_Alpha() const property;
     void set_Alpha(float alpha) property;
     int get_GetColorR() const property;
@@ -1355,6 +1365,8 @@ class Sprite {
     string get_Class() const property;
     void set_Mask(int mask) property;
     int get_Mask() const property;
+    B3D::Entity@ opImplCast();
+    const B3D::Entity@ opImplCast() const;
     float get_Alpha() const property;
     void set_Alpha(float alpha) property;
     int get_GetColorR() const property;
@@ -1456,6 +1468,8 @@ class Plane {
     string get_Class() const property;
     void set_Mask(int mask) property;
     int get_Mask() const property;
+    B3D::Entity@ opImplCast();
+    const B3D::Entity@ opImplCast() const;
     float get_Alpha() const property;
     void set_Alpha(float alpha) property;
     int get_GetColorR() const property;
@@ -1553,6 +1567,8 @@ class Terrain {
     string get_Class() const property;
     void set_Mask(int mask) property;
     int get_Mask() const property;
+    B3D::Entity@ opImplCast();
+    const B3D::Entity@ opImplCast() const;
     float get_Alpha() const property;
     void set_Alpha(float alpha) property;
     int get_GetColorR() const property;
@@ -1920,7 +1936,7 @@ class Room {
     B3D::Channel@ SoundCHN;
     CB::Forest@ Forest;
     carray<int> SoundEmitter;
-    carray<B3D::Pivot@> SoundEmitterObj;
+    carray<B3D::Pivot@> SoundEmitterObject;
     carray<float> SoundEmitterRange;
     carray<B3D::Channel@> SoundEmitterCHN;
     carray<B3D::Light@> Lights;
@@ -1999,6 +2015,12 @@ class TempTriggerbox {
     B3D::Mesh@ Object;
     string Name;
     CB::TempTriggerbox@ Successor;
+    float MinX;
+    float MinY;
+    float MinZ;
+    float MaxX;
+    float MaxY;
+    float MaxZ;
     void Delete();
     CB::TempTriggerbox@ get_Next() const property;
     CB::TempTriggerbox@ get_Previous() const property;
@@ -2029,6 +2051,7 @@ class TempItem {
 class TempDoor {
     int Dir;
     int KeyCard;
+    int Index;
     string Code;
     float X;
     float Y;
