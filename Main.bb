@@ -270,6 +270,7 @@ Type HUDScaledImage
 	Field BaseWidth%
 	Field BaseHeight%
 End Type
+Delete Each HUDScaledImage
 
 Function LoadImageHUDScaled(file$, fixedSizeX% = 0, fixedSizeY% = 0)
 	Local img%
