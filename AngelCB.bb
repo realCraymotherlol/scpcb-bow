@@ -905,6 +905,46 @@ Function RegisterConsole()
     SetDefaultNamespace(ns)
 End Function
 
+Function EventGetChannel%(e.Events)
+    If e\SoundCHN_isStream Then Return 0
+    Return e\SoundCHN
+End Function
+
+Function EventGetChannel2%(e.Events)
+    If e\SoundCHN2_isStream Then Return 0
+    Return e\SoundCHN2
+End Function
+
+Function EventGetChannelStream%(e.Events)
+    If Not e\SoundCHN_isStream Then Return 0
+    Return e\SoundCHN
+End Function
+
+Function EventGetChannelStream2%(e.Events)
+    If Not e\SoundCHN2_isStream Then Return 0
+    Return e\SoundCHN2
+End Function
+
+Function EventSetChannel(e.Events, chn%)
+    e\SoundCHN = chn
+    e\SoundCHN_isStream = 0
+End Function
+
+Function EventSetChannel2(e.Events, chn%)
+    e\SoundCHN2 = chn
+    e\SoundCHN2_isStream = 0
+End Function
+
+Function EventSetChannelStream(e.Events, chn%)
+    e\SoundCHN = chn
+    e\SoundCHN_isStream = 1
+End Function
+
+Function EventSetChannelStream2(e.Events, chn%)
+    e\SoundCHN2 = chn
+    e\SoundCHN2_isStream = 1
+End Function
+
 Function RegisterEvent()
     RegisterTypeFromPtr("Event", %Events)
     RegisterTypeField("Event", "string Name", %Events\EventName)
@@ -912,8 +952,14 @@ Function RegisterEvent()
     RegisterTypeField("Event", "float State", %Events\EventState)
     RegisterTypeField("Event", "float State2", %Events\EventState2)
     RegisterTypeField("Event", "float State3", %Events\EventState3)
-    RegisterTypeField("Event", "B3D::Channel@ Channel", %Events\SoundCHN)
-    RegisterTypeField("Event", "B3D::Channel@ Channel2", %Events\SoundCHN2)
+    RegisterObjectMethod("Event", "B3D::Channel@ get_Channel() property", @EventGetChannel)
+    RegisterObjectMethod("Event", "B3D::Channel@ get_Channel2() property", @EventGetChannel2)
+    RegisterObjectMethod("Event", "CB::Stream@ get_ChannelStream() property", @EventGetChannelStream)
+    RegisterObjectMethod("Event", "CB::Stream@ get_ChannelStream2() property", @EventGetChannelStream2)
+    RegisterObjectMethod("Event", "void set_Channel(B3D::Channel@) property", @EventSetChannel)
+    RegisterObjectMethod("Event", "void set_Channel2(B3D::Channel@) property", @EventSetChannel2)
+    RegisterObjectMethod("Event", "void set_ChannelStream(CB::Stream@) property", @EventSetChannelStream)
+    RegisterObjectMethod("Event", "void set_ChannelStream2(CB::Stream@) property", @EventSetChannelStream2)
     RegisterTypeField("Event", "CB::Sound@ Sound", %Events\Sound)
     RegisterTypeField("Event", "CB::Sound@ Sound2", %Events\Sound2)
     RegisterTypeField("Event", "int ChannelIsStream", %Events\SoundCHN_isStream)
@@ -928,7 +974,121 @@ Function RegisterEvent()
 
     RegisterGlobalFunction("Event@ Create(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
 
-    RegisterGlobalFunction("float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignorerotation = true)", @UpdateElevators)
+    RegisterGlobalFunction("float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignoreRotation = true)", @UpdateElevators)
+
+    RegisterGlobalFunction("void UpdateAll()", @UpdateEvents)
+    RegisterGlobalFunction("void UpdateDimension1499()", @UpdateDimension1499)
+    RegisterGlobalFunction("void UpdateEndings()", @UpdateEndings)
+
+    SetDefaultNamespace(ns)
+End Function
+
+Function RegisterSubtitles()
+    RegisterTypeFromPtr("SubtitleBox", %SubtitleBox)
+    RegisterTypeField("SubtitleBox", "float ScreenWidth", %SubtitleBox\screenWidth)
+    RegisterTypeField("SubtitleBox", "float ScreenLeft", %SubtitleBox\screenLeft)
+    RegisterTypeField("SubtitleBox", "float ScreenTop", %SubtitleBox\screenTop)
+    RegisterTypeField("SubtitleBox", "float CurrentTop", %SubtitleBox\curTop)
+    RegisterTypeField("SubtitleBox", "float CurrentHeight", %SubtitleBox\curHeight)
+    RegisterTypeField("SubtitleBox", "float TargetTop", %SubtitleBox\targetTop)
+    RegisterTypeField("SubtitleBox", "float TargetHeight", %SubtitleBox\targetHeight)
+    RegisterTypeField("SubtitleBox", "float Alpha", %SubtitleBox\alpha)
+    RegisterTypeField("SubtitleBox", "int Lines", %SubtitleBox\lines)
+    RegisterTypeField("SubtitleBox", "B3D::Camera@ Camera", %SubtitleBox\cam)
+    RegisterTypeField("SubtitleBox", "B3D::Sprite@ Sprite", %SubtitleBox\sprite)
+
+    RegisterTypeFromPtr("SubtitleColor", %SubtitleColor)
+    RegisterTypeField("SubtitleColor", "string VoiceKey", %SubtitleColor\voiceKey)
+    RegisterTypeField("SubtitleColor", "string Name", %SubtitleColor\name)
+    RegisterTypeField("SubtitleColor", "int R", %SubtitleColor\r)
+    RegisterTypeField("SubtitleColor", "int G", %SubtitleColor\g)
+    RegisterTypeField("SubtitleColor", "int B", %SubtitleColor\b)
+    RegisterTypeField("SubtitleColor", "bool IsItalic", %SubtitleColor\isItalic)
+    RegisterTypeField("SubtitleColor", "bool IsBold", %SubtitleColor\isBold)
+    RegisterTypeField("SubtitleColor", "float CooldownLength", %SubtitleColor\cooldownLength)
+    RegisterTypeField("SubtitleColor", "float MinVolume", %SubtitleColor\minVolume)
+
+    RegisterTypeFromPtr("SubtitleEntry", %SubtitleEntry)
+    RegisterTypeField("SubtitleEntry", "SubtitleEntry@ NextEntry", %SubtitleEntry\nextEntry)
+    RegisterTypeField("SubtitleEntry", "string Text", %SubtitleEntry\txt)
+    RegisterTypeField("SubtitleEntry", "SubtitleColor@ Color", %SubtitleEntry\col)
+    RegisterTypeField("SubtitleEntry", "int EntryType", %SubtitleEntry\entryType)
+    RegisterTypeField("SubtitleEntry", "float Time", %SubtitleEntry\time)
+    RegisterTypeField("SubtitleEntry", "float Length", %SubtitleEntry\length)
+    RegisterTypeField("SubtitleEntry", "float Cooldown", %SubtitleEntry\cooldown)
+
+    RegisterTypeFromPtr("SubtitleToken", %SubtitleToken)
+    RegisterTypeField("SubtitleToken", "string SoundPath", %SubtitleToken\soundPath)
+    RegisterTypeField("SubtitleToken", "int FromFile", %SubtitleToken\fromFile)
+    RegisterTypeField("SubtitleToken", "SubtitleEntry@ Entry", %SubtitleToken\entry)
+
+    RegisterTypeFromPtr("QueuedSubtitleMsg", %QueuedSubtitleMsg)
+    RegisterTypeField("QueuedSubtitleMsg", "SubtitleToken@ Token", %QueuedSubtitleMsg\token)
+    RegisterTypeField("QueuedSubtitleMsg", "SubtitleEntry@ Entry", %QueuedSubtitleMsg\entry)
+    RegisterTypeField("QueuedSubtitleMsg", "int SoundHandle", %QueuedSubtitleMsg\sndHandle)
+    RegisterTypeField("QueuedSubtitleMsg", "B3D::Channel@ Channel", %QueuedSubtitleMsg\chn)
+    RegisterTypeField("QueuedSubtitleMsg", "bool IsStream", %QueuedSubtitleMsg\isStream)
+    RegisterTypeField("QueuedSubtitleMsg", "float Volume", %QueuedSubtitleMsg\volume)
+    RegisterTypeField("QueuedSubtitleMsg", "int Paused", %QueuedSubtitleMsg\paused)
+    RegisterTypeField("QueuedSubtitleMsg", "float TimeStart", %QueuedSubtitleMsg\timeStart)
+
+    RegisterTypeFromPtr("SubtitleMsg", %SubtitleMsg)
+    RegisterTypeField("SubtitleMsg", "SubtitleEntry@ Entry", %SubtitleMsg\entry)
+    RegisterTypeField("SubtitleMsg", "string Text", %SubtitleMsg\txt)
+    RegisterTypeField("SubtitleMsg", "float Y", %SubtitleMsg\curYPos)
+    RegisterTypeField("SubtitleMsg", "float TimeLeft", %SubtitleMsg\timeLeft)
+
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Subtitles") Else SetDefaultNamespace("Subtitles")
+
+    RegisterGlobalProperty("float TextHeight", &SubtitleTextHeight)
+    RegisterGlobalProperty("float EarlyDelay", &SubtitleEarlyDelay)
+    RegisterGlobalProperty("float FadeLength", &SubtitleFadeLength)
+
+    RegisterGlobalProperty("bool Initialized", &SubtitlesInitialized)
+
+    RegisterGlobalProperty("B3D::Font@ Font1Bold", &Font1Bold)
+    RegisterGlobalProperty("B3D::Font@ Font1Italic", &Font1Italic)
+    RegisterGlobalProperty("B3D::Font@ Font1BoldItalic", &Font1BoldItalic)
+
+    ; TODO: Cache?
+
+    RegisterGlobalProperty("SubtitleBox@ Box", &SubBox)
+
+    RegisterGlobalFunction("void Load()", @LoadSubtitles)
+    RegisterGlobalFunction("void LoadEntities()", @LoadSubtitleEntities)
+    RegisterGlobalFunction("void Queue(string soundPath, int soundHandle, B3D::Channel@ channel, bool isStream=false)", @QueueSubtitle)
+    RegisterGlobalFunction("void RemoveQueued(int soundHandle)", @RemoveQueuedSubtitle)
+    RegisterGlobalFunction("void RemoveQueuedByChannel(B3D::Channel@ channel, bool isStream=false)", @RemoveQueuedSubtitleByChannel)
+    RegisterGlobalFunction("void UpdateChannelVolume(B3D::Channel@ channel, float volume, bool isStream=false, bool isSFX=true)", @UpdateChannelVolumeWithSubtitles)
+    RegisterGlobalFunction("void UpdateQueuedVolume(B3D::Channel@ channel, float volume, bool isStream=false)", @UpdateQueuedSubtitleVolume)
+    RegisterGlobalFunction("void ResumeChannel(B3D::Channel@ channel)", @ResumeChannelWithSubtitles)
+    RegisterGlobalFunction("void PauseChannel(B3D::Channel@ channel)", @PauseChannelWithSubtitles)
+    RegisterGlobalFunction("void SetQueuedPause(B3D::Channel@ channel, bool paused)", @SetQueuedSubtitlePause)
+    RegisterGlobalFunction("void Clear()", @ClearSubtitles)
+    RegisterGlobalFunction("bool ShouldShow(SubtitleEntry@ entry)", @ShouldShowSubtitle)
+    RegisterGlobalFunction("SubtitleMsg@ TryCreate(QueuedSubtitleMsg@ queue, string txt=" + Chr(34) + Chr(34) + ")", @TryCreateSubtitleMsg)
+    RegisterGlobalFunction("void TryCreateSplit(QueuedSubtitleMsg@ queue, string txtLine, int padding)", @TryCreateSplitSubtitleMsg)
+    RegisterGlobalFunction("void RecalculateBoxTarget()", @RecalculateSubtitleBoxTarget)
+    RegisterGlobalFunction("void BumpUp(SubtitleMsg@ msg)", @BumpSubtitleUp)
+    RegisterGlobalFunction("void Update(float factor)", @UpdateSubtitles)
+    RegisterGlobalFunction("void Draw()", @DrawSubtitles)
+    RegisterGlobalFunction("void Render()", @RenderSubtitles)
+
+    RegisterGlobalFunction("string StripComments(string line)", @SubtitleStripComments)
+    RegisterGlobalFunction("void LoadVoices(string path)", @LoadSubtitleVoices)
+    RegisterGlobalFunction("void LoadTokens(string path, int tokenType)", @LoadSubtitleTokens)
+    RegisterGlobalFunction("SubtitleEntry@ CreateEntry(string key, string value, SubtitleColor@ color, int tokenType)", @CreateSubtitleEntry)
+    RegisterGlobalFunction("void CreateToken(SubtitleEntry@ entry, string soundPathGroup, int tokenType)", @CreateSubtitleToken)
+    RegisterGlobalFunction("SubtitleToken@ GetToken(string soundPath)", @GetSubtitleToken)
+    RegisterGlobalFunction("string ParseSettings(SubtitleEntry@ entry, string txt, bool isCaption=false)", @ParseSubtitleSettings)
+    RegisterGlobalFunction("bool ApplyDataSetting(string key, string value, SubtitleEntry@ entry)", @ApplySubtitleDataSetting)
+    RegisterGlobalFunction("bool ApplyColorSetting(string key, string value, SubtitleColor@ color)", @ApplySubtitleColorSetting)
+    RegisterGlobalFunction("SubtitleColor@ FindOrAddVoice(string voice)", @FindOrAddSubtitleVoice)
+    RegisterGlobalFunction("void CopyColor(SubtitleColor@ fromColor, SubtitleColor@ toColor, bool keepVoiceKey=false, bool keepBools=true)", @CopySubtitleColor)
+    RegisterGlobalFunction("bool ColorsMatch(SubtitleColor@ firstColor, SubtitleColor@ secondColor)", @SubtitleColorsMatch)
+    RegisterGlobalFunction("SubtitleColor@ InternColor(SubtitleColor@ color)", @InternSubtitleColor)
+    RegisterGlobalFunction("void CleanupColors()", @CleanupColors)
 
     SetDefaultNamespace(ns)
 End Function
@@ -945,7 +1105,7 @@ Function RegisterCB()
     RegisterCBAudio()
     RegisterCBInput()
     RegisterParticleSystem()
-    ; Fucking ugly but the dependencies have a ton of circles.
+    ; Fucking ugly but the dependencies have a ton of cycles.
     RegisterTypeFromPtr("Waypoint", %WayPoints)
     RegisterNPC()
     RegisterMap()
@@ -955,6 +1115,7 @@ Function RegisterCB()
     RegisterDreamfilter()
     RegisterConsole()
     RegisterEvent()
+    RegisterSubtitles()
     SetDefaultNamespace("")
 End Function
 
