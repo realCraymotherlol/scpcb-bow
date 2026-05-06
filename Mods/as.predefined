@@ -624,6 +624,8 @@ class Image {
     void SetMidHandle();
     int get_Width() const property;
     int get_Height() const property;
+    int get_OriginalWidth() const property;
+    int get_OriginalHeight() const property;
     int get_XHandle() const property;
     int get_YHandle() const property;
     void Scale(float xscale, float yscale);
