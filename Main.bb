@@ -4215,7 +4215,7 @@ Function DrawEnding()
 				Text(x + width / 2 + 40*MenuScale, y + 20*MenuScale, I_Loc\Menu_End, True)
 				SetFont Font1
 				
-				If AchievementsMenu=0 Then 
+				If AchievementsMenu<=0 Then 
 					x = x+132*MenuScale
 					y = y+122*MenuScale
 					
@@ -9488,9 +9488,9 @@ Function NullGame(playbuttonsfx%=True)
 	
 	NoTarget% = False
 	
-	OptionsMenu% = -1
-	QuitMSG% = -1
-	AchievementsMenu% = -1
+	OptionsMenu% = 0
+	QuitMSG% = 0
+	AchievementsMenu% = 0
 	
 	SFXVolume# = PrevSFXVolume
 	DeafPlayer% = False
