@@ -6838,7 +6838,7 @@ Function UpdateEvents()
 			Case "tunnel106"
 				;[Block]
 				If e\EventState = 0 Then
-					If e\room\dist < 5.0 And e\room\dist > 0 Then
+					If e\room\dist < 5.0 And e\room\dist > 0 And Abs(EntityY(Collider) - e\room\y) < 1 Then
 						If Curr106\State >= 0 Then
 							e\EventState = 1
 						Else
