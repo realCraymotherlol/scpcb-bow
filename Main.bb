@@ -269,7 +269,7 @@ Global Vsync% = GetOptionInt("graphics", "vsync")
 
 Global Opt_AntiAlias = GetOptionInt("graphics", "antialias")
 
-Global CurrFrameLimit# = (Framelimit%-19)/100.0
+Global CurrFrameLimit# = (Framelimit%-17)/280.0
 
 Global ScreenGamma# = GetOptionFloat("graphics", "screengamma")
 ;If Fullscreen Then UpdateScreenGamma()
