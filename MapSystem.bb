@@ -2222,7 +2222,7 @@ Function FillRoom(r.Rooms)
 			;doors to observation booth
 			d = CreateDoor(r\zone, r\x + 928.0 * RoomScale,0,r\z + 640.0 * RoomScale,0,r,False,False,False,"ABCD")
 			d = CreateDoor(r\zone, r\x + 928.0 * RoomScale,0,r\z - 640.0 * RoomScale,0,r,True,False,False,"ABCD")
-			d\AutoClose = False : d\MTFClose = False
+			d\AutoClose = False : d\MTFClose = False : d\DisableWaypoint = True
 			
 			;doors to the room itself
 			d = CreateDoor(r\zone, r\x+416.0*RoomScale,0,r\z - 640.0 * RoomScale,0,r,False,False,1)
@@ -4473,6 +4473,13 @@ Function FillRoom(r.Rooms)
 			
 			it = CreateItem("docL1", r\x - 928.0 * RoomScale, 160.0 * RoomScale, r\z - 160.0 * RoomScale)
 			EntityParent(it\collider, r\obj)
+
+			Use914Triggerbox = False
+			Local ttb.TempTriggerboxes = r\RoomTemplate\FirstTempTriggerbox
+			While ttb <> Null
+				If ttb\Name = "914input" Then Use914Triggerbox = True : Exit
+				ttb = ttb\Successor
+			Wend
 			;[End Block]
 		Case "173"
 			;[Block]
@@ -7307,17 +7314,17 @@ Function CreateMap(loadingstart,loadingcount#)
 				For x = x_min To x_max
 					If MapTemp(x,y)=3 Then
 						placed=False
-						Select 0 ;see if adding a ROOM4 is possible
-							Case (MapTemp(x+1,y) Or MapTemp(x+1,y+1) Or MapTemp(x+1,y-1) Or MapTemp(x+2,y) Or x=x_max)
+						Select 1 ;see if adding a ROOM4 is possible
+							Case (x<>x_max And MapTemp(x+1,y)+MapTemp(x+1,y+1)+MapTemp(x+1,y-1)+MapTemp(x+2,y)=0)
 								MapTemp(x+1,y)=1
 								placed=True
-							Case (MapTemp(x-1,y) Or MapTemp(x-1,y+1) Or MapTemp(x-1,y-1) Or MapTemp(x-2,y) Or x=x_min)
+							Case (x<>x_min And MapTemp(x-1,y)+MapTemp(x-1,y+1)+MapTemp(x-1,y-1)+MapTemp(x-2,y)=0)
 								MapTemp(x-1,y)=1
 								placed=True
-							Case (MapTemp(x,y+1) Or MapTemp(x+1,y+1) Or MapTemp(x-1,y+1) Or MapTemp(x,y+2) Or (i=0 And y=y_max))
+							Case ((i<>0 Lor y<>y_max) And MapTemp(x,y+1)+MapTemp(x+1,y+1)+MapTemp(x-1,y+1)+MapTemp(x,y+2)=0)
 								MapTemp(x,y+1)=1
 								placed=True
-							Case (MapTemp(x,y-1) Or MapTemp(x+1,y-1) Or MapTemp(x-1,y-1) Or MapTempSafe(x,y-2) Or (i<2 And y=y_min))
+							Case ((i=2 Lor y<>y_min) And MapTemp(x,y-1)+MapTemp(x+1,y-1)+MapTemp(x-1,y-1)+MapTemp(x,y-2)=0)
 								MapTemp(x,y-1)=1
 								placed=True
 						End Select

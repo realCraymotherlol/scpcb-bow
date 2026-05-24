@@ -375,7 +375,7 @@ Function UpdateMainMenu()
 				
 				If SelectedDifficulty\customizable Then
 					SelectedDifficulty\permaDeath =  DrawTick(x + 160 * MenuScale, y + 165 * MenuScale, SelectedDifficulty\permaDeath)
-					Text(x + 200 * MenuScale, y + 165 * MenuScale, I_Loc\Difficulty_Permadeath)
+					Text(x + 190 * MenuScale, y + 170 * MenuScale, I_Loc\Difficulty_Permadeath)
 					
 					If DrawTick(x + 160 * MenuScale, y + 195 * MenuScale, SelectedDifficulty\saveType = SAVEANYWHERE And (Not SelectedDifficulty\permaDeath)) Then 
 						SelectedDifficulty\saveType = SAVEANYWHERE
@@ -384,10 +384,10 @@ Function UpdateMainMenu()
 						SelectedDifficulty\saveType = SAVEONSCREENS
 					EndIf
 					
-					Text(x + 200 * MenuScale, y + 195 * MenuScale, I_Loc\Difficulty_Saveanywhere)	
+					Text(x + 190 * MenuScale, y + 200 * MenuScale, I_Loc\Difficulty_Saveanywhere)	
 					
 					SelectedDifficulty\aggressiveNPCs =  DrawTick(x + 160 * MenuScale, y + 225 * MenuScale, SelectedDifficulty\aggressiveNPCs)
-					Text(x + 200 * MenuScale, y + 225 * MenuScale, I_Loc\Difficulty_Aggressivenpcs)
+					Text(x + 190 * MenuScale, y + 230 * MenuScale, I_Loc\Difficulty_Aggressivenpcs)
 					
 					;Other factor's difficulty
 					Color 255,255,255
@@ -405,11 +405,11 @@ Function UpdateMainMenu()
 					Color 255,255,255
 					Select SelectedDifficulty\otherFactors
 						Case EASY
-							Text(x + 200 * MenuScale, y + 255 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherEasy))
+							Text(x + 190 * MenuScale, y + 260 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherEasy))
 						Case NORMAL
-							Text(x + 200 * MenuScale, y + 255 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherNormal))
+							Text(x + 190 * MenuScale, y + 260 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherNormal))
 						Case HARD
-							Text(x + 200 * MenuScale, y + 255 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherHard))
+							Text(x + 190 * MenuScale, y + 260 * MenuScale, Format(I_Loc\Difficulty_Other, I_Loc\Difficulty_OtherHard))
 					End Select
 				Else
 					RowText(SelectedDifficulty\description, x+160*MenuScale, y+165*MenuScale, (410-20)*MenuScale, 140*MenuScale)					
@@ -1045,10 +1045,10 @@ Function UpdateMainMenu()
 					Text(x + 20 * MenuScale, y, I_Loc\OptionName_Framelimit)
 					Color 255,255,255
 					If DrawTick(x + 310 * MenuScale, y, CurrFrameLimit > 0.0) Then
-						If CurrFrameLimit = 0 Then CurrFrameLimit = (60-20)/280.0
-						CurrFrameLimit# = (SlideBar(x + 310*MenuScale, y+30*MenuScale, 150*MenuScale, CurrFrameLimit#*100.0, 1)/100.0)
-						CurrFrameLimit# = Max(CurrFrameLimit, 0.001)
-						Framelimit% = 20+(CurrFrameLimit*280.0)
+						If CurrFrameLimit = 0 Then CurrFrameLimit = (60-17)/100.0
+						CurrFrameLimit# = (SlideBar(x + 310*MenuScale, y+30*MenuScale, 150*MenuScale, CurrFrameLimit#*99.0, 1)/99.0)
+						CurrFrameLimit# = Max(CurrFrameLimit, 0.01)
+						Framelimit% = 17+(CurrFrameLimit*280.0)
 						Color 255,255,0
 						Text(x + 25 * MenuScale, y + 25 * MenuScale, Format(I_Loc\OptionName_FramelimitFps, Framelimit%))
 						If (MouseOn(x+310*MenuScale,y+30*MenuScale,150*MenuScale+14,20) And OnSliderID=0) Lor OnSliderID=1
@@ -1606,6 +1606,11 @@ Function UpdateLauncher()
 		EndIf
 	Next
 
+	Local aspectRatioBarWidth% = -5
+	For i = 0 To (AspectRatioCount - 1)
+		aspectRatioBarWidth = aspectRatioBarWidth + StringWidth(Str(AspectRatioWidths(i)) + ":" + Str(AspectRatioHeights(i))) + 15
+	Next
+
 	If SelectedGfxMode = -1 Then SelectedGfxMode = nativeGfxMode : SelectedAspectRatio = nativeAspectRatio
 
 	Local gfxDriverCount = CountGfxDrivers()
@@ -1643,7 +1648,7 @@ Function UpdateLauncher()
 		y = y - 5
 
 		Color 255, 255, 255
-		Rect(x, y, 400, 20)
+		Rect(x, y, aspectRatioBarWidth, 20)
 		For i = 0 To (AspectRatioCount - 1)
 			Color 0, 0, 0
 			Local txt$ = Str(AspectRatioWidths(i)) + ":" + Str(AspectRatioHeights(i))
