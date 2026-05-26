@@ -305,17 +305,27 @@ Function CreateItem.Items(name$, x#, y#, z#)
 	i\DropSpeed = 0.0
 	
 	i\invimg = i\itemtemplate\invimg
-	If name="clipboard" Then
-		i\Inventory = New Inventories
-		i\Inventory\Size = 10
-		SetAnimTime i\model,17.0
-		i\invimg = i\itemtemplate\invimg2
-	ElseIf name="wallet" Then
-		i\Inventory = New Inventories
-		i\Inventory\Size = 10
-		SetAnimTime i\model,0.0
+
+	Local createOverriden% = False
+	If CreateItem\Subscribers > 0 Then
+		PrepareFunction(1)
+		SetArgObj(0, &i)
+		If CallHook(CreateItem) Then createOverriden = True
 	EndIf
-	
+
+	If Not createOverriden Then
+		If name="clipboard" Then
+			i\Inventory = New Inventories
+			i\Inventory\Size = 10
+			SetAnimTime i\model,17.0
+			i\invimg = i\itemtemplate\invimg2
+		ElseIf name="wallet" Then
+			i\Inventory = New Inventories
+			i\Inventory\Size = 10
+			SetAnimTime i\model,0.0
+		EndIf
+	EndIf
+
 	i\ID=LastItemID+1
 	LastItemID=i\ID
 	
