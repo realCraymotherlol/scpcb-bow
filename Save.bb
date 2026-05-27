@@ -1117,8 +1117,6 @@ Function LoadGame(file$)
 			it = CreateItem(ittName, x, y, z)
 		EndIf
 		
-		EntityType it\collider, HIT_ITEM
-		
 		x = ReadFloat(f)
 		y = ReadFloat(f)
 		RotateEntity(it\collider, x, y, 0)
@@ -1845,8 +1843,6 @@ Function LoadGameQuick(file$)
 		Else
 			it = CreateItem(ittName, x, y, z)
 		EndIf
-		
-		EntityType it\collider, HIT_ITEM
 		
 		x = ReadFloat(f)
 		y = ReadFloat(f)

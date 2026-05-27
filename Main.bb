@@ -1103,7 +1103,6 @@ Function UpdateConsole()
 					Else
 						CreateConsoleMsg(itt\displayname + " spawned.")
 						it.Items = CreateItem(itt\name, EntityX(Collider), EntityY(Camera,True), EntityZ(Collider))
-						EntityType(it\collider, HIT_ITEM)
 
 						If itt\name = "snavulti" Lor itt\name = "fineradio" Lor itt\name = "veryfineradio" Then
 							it\state = 101
@@ -1248,7 +1247,6 @@ Function UpdateConsole()
 						Else
 							it.Items = CreateItem("joint", EntityX(Collider,True)+Cos((360.0/20.0)*i)*Rnd(0.3,0.5), EntityY(Camera,True), EntityZ(Collider,True)+Sin((360.0/20.0)*i)*Rnd(0.3,0.5))
 						EndIf
-						EntityType (it\collider, HIT_ITEM)
 					Next
 					PlaySound_Strict LoadTempSound("SFX\Music\420J.ogg")
 					;[End Block]
@@ -1613,13 +1611,11 @@ Function UpdateConsole()
 				Case "spawnradio"
 					;[Block]
 					it.Items = CreateItem("fineradio", EntityX(Collider), EntityY(Camera,True), EntityZ(Collider))
-					EntityType(it\collider, HIT_ITEM)
 					it\state = 101
 					;[End Block]
 				Case "spawnnvg"
 					;[Block]
 					it.Items = CreateItem("nvgoggles", EntityX(Collider), EntityY(Camera,True), EntityZ(Collider))
-					EntityType(it\collider, HIT_ITEM)
 					it\state = 1000
 					;[End Block]
 				Case "spawnpumpkin","pumpkin"
@@ -1629,7 +1625,6 @@ Function UpdateConsole()
 				Case "spawnnav"
 					;[Block]
 					it.Items = CreateItem("snavulti", EntityX(Collider), EntityY(Camera,True), EntityZ(Collider))
-					EntityType(it\collider, HIT_ITEM)
 					it\state = 101
 					;[End Block]
 				Case "teleport173"
@@ -6355,7 +6350,6 @@ Function DrawGUI()
 							For i = 0 To MaxItemAmount-1
 								If Inventory(i)=SelectedItem Then Inventory(i) = it : Exit
 							Next					
-							EntityType (it\collider, HIT_ITEM)
 							
 							RemoveItem(SelectedItem)						
 						EndIf
@@ -9038,7 +9032,7 @@ Function InitNewGame()
 	Next
 	
 	For it.Items = Each Items
-		EntityType (it\collider, HIT_ITEM)
+		ResetEntity(it\collider)
 		EntityParent(it\collider, 0)
 	Next
 	
@@ -9084,7 +9078,6 @@ Function InitNewGame()
 			it\itemtemplate\found=True
 			Inventory(0) = it
 			HideEntity(it\collider)
-			EntityType (it\collider, HIT_ITEM)
 			EntityParent(it\collider, 0)
 			ItemAmount = ItemAmount + 1
 			it = CreateItem("doc173", 1, 1, 1)
@@ -9093,7 +9086,6 @@ Function InitNewGame()
 			it\itemtemplate\found=True
 			Inventory(1) = it
 			HideEntity(it\collider)
-			EntityType (it\collider, HIT_ITEM)
 			EntityParent(it\collider, 0)
 			ItemAmount = ItemAmount + 1
 		ElseIf (r\RoomTemplate\Name = "173" And IntroEnabled) Then
@@ -10384,9 +10376,6 @@ Function Use914(item.Items, setting$, x#, y#, z#)
 					it3 = CreateItem("25ct", x, y, z)
 					it4 = CreateItem("25ct", x, y, z)
 					it5 = CreateItem("25ct", x, y, z)
-					EntityType (it3\collider, HIT_ITEM)
-					EntityType (it4\collider, HIT_ITEM)
-					EntityType (it5\collider, HIT_ITEM)
 				Case "1:1"
 					it2 = CreateItem("key1", x, y, z)	
 			    Case "fine", "very fine"
@@ -10635,8 +10624,6 @@ Function Use914(item.Items, setting$, x#, y#, z#)
 			EndIf
 			
 	End Select
-	
-	If it2 <> Null Then EntityType (it2\collider, HIT_ITEM)
 End Function
 
 Global Keyboard294Layers%, Keyboard294X%, Keyboard294Y%, Keyboard294Width%, Keyboard294Height%, Keyboard294TileWidth#, Keyboard294TileHeight#, Keyboard294ResetLayerOnInput%
@@ -10835,7 +10822,6 @@ Function Use294()
 					If glow Then alpha = -alpha
 					
 					it.items = CreateCup(Input294, EntityX(PlayerRoom\Objects[1],True),EntityY(PlayerRoom\Objects[1],True),EntityZ(PlayerRoom\Objects[1],True), r,g,b,alpha)
-					EntityType (it\collider, HIT_ITEM)
 					
 				Else
 					;out of range

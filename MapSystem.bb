@@ -1209,7 +1209,6 @@ Function PlaceForest(fr.Forest,x#,y#,z#,r.Rooms)
 						Else
 							it.Items = CreateItem("log"+Int(Floor(ty/3)+1), 0,0.2,0)
 						EndIf
-						EntityType(it\collider, HIT_ITEM)
 						EntityParent(it\collider, tile_entity)
 					EndIf
 					
@@ -1431,7 +1430,6 @@ Function PlaceForest_MapCreator(fr.Forest,x#,y#,z#,r.Rooms)
 						Else
 							it.Items = CreateItem("log"+Int(Floor(ty/3)+1), 0,0.2,0)
 						EndIf
-						EntityType(it\collider, HIT_ITEM)
 						EntityParent(it\collider, tile_entity)
 					EndIf
 					
@@ -1935,10 +1933,8 @@ Function PlaceGrid_MapCreator(r.Rooms)
 					Case ROOM4+2
 						AddLight%(Null, r\x+x*2.0-(Sin(EntityYaw(tile_entity,True))*504.0*RoomScale)+(Cos(EntityYaw(tile_entity,True))*16.0*RoomScale), MT_HEIGHT+(396.0*RoomScale), r\z+y*2.0+(Cos(EntityYaw(tile_entity,True))*504.0*RoomScale)+(Sin(EntityYaw(tile_entity,True))*16.0*RoomScale), 2, 500.0 * RoomScale, 255, 200, 200)
 						it = CreateItem("scp500",r\x+x*2.0+(Cos(EntityYaw(tile_entity,True))*(-208.0)*RoomScale)-(Sin(EntityYaw(tile_entity,True))*1226.0*RoomScale),MT_HEIGHT+(80.0*RoomScale),r\z+y*2.0+(Sin(EntityYaw(tile_entity,True))*(-208.0)*RoomScale)+(Cos(EntityYaw(tile_entity,True))*1226.0*RoomScale))
-						EntityType (it\collider, HIT_ITEM)
 						
 						it = CreateItem("nvgoggles",r\x+x*2.0-(Sin(EntityYaw(tile_entity,True))*504.0*RoomScale)+(Cos(EntityYaw(tile_entity,True))*16.0*RoomScale), MT_HEIGHT+(80.0*RoomScale), r\z+y*2.0+(Cos(EntityYaw(tile_entity,True))*504.0*RoomScale)+(Sin(EntityYaw(tile_entity,True))*16.0*RoomScale))
-						EntityType (it\collider, HIT_ITEM)
 				End Select
 				
 				r\grid\Entities[x+(y*gridsz)]=tile_entity
@@ -5626,7 +5622,6 @@ Function FillRoom(r.Rooms)
 			EndIf
 			it\state = tempIt\State
 			it\state2 = tempIt\State2
-			EntityType(it\collider, HIT_ITEM)
 			EntityParent(it\collider, r\obj)
 		EndIf
 		tempIt = tempIt\Successor
