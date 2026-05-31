@@ -282,7 +282,7 @@ End Function
 Function RegisterDoor()
     RegisterTypeFromPtr("Door", %Doors)
 
-    RegisterTypeConstructor("Door", "Door@ f(int lvl, float x, float y, float z, float yawAngle, Room@ room, bool startOpen=false, int big=0, int keycard=0, string code=" + Chr(34) + Chr(34) + ", bool useCollisionMesh=false)", @CreateDoor)
+    RegisterTypeConstructor("Door", "Door@+ f(int lvl, float x, float y, float z, float yawAngle, Room@ room, bool startOpen=false, int big=0, int keycard=0, string code=" + Chr(34) + Chr(34) + ", bool useCollisionMesh=false)", @CreateDoor)
 
     RegisterTypeField("Door", "B3D::Mesh@ Object", %Doors\obj)
     RegisterTypeField("Door", "B3D::Mesh@ Object2", %Doors\obj2)
@@ -410,7 +410,7 @@ Function RegisterRoomTemplate()
 End Function
 
 Function RegisterWayPoint()
-    RegisterTypeConstructor("Waypoint", "Waypoint@ f(float x, float y, float z, Door@ door, Room@ room)", @CreateWaypoint)
+    RegisterTypeConstructor("Waypoint", "Waypoint@+ f(float x, float y, float z, Door@ door, Room@ room)", @CreateWaypoint)
     RegisterTypeField("Waypoint", "B3D::Pivot@ Object", %WayPoints\obj)
     RegisterTypeField("Waypoint", "Door@ Door", %WayPoints\door)
     RegisterTypeField("Waypoint", "Room@ Room", %WayPoints\room)
@@ -524,7 +524,7 @@ Function RegisterNPC()
     SetDefaultNamespace(ns)
 
     ; Replace first argument with some other type to enforce having to register modded NPC types.
-    RegisterTypeConstructor("NPC", "NPC@ f(NPC::Type type, float x, float y, float z)", @CreateNPC)
+    RegisterTypeConstructor("NPC", "NPC@+ f(NPC::Type type, float x, float y, float z)", @CreateNPC)
     RegisterObjectMethod("NPC", "void Remove()", @RemoveNPC)
 
     RegisterTypeField("NPC", "B3D::Entity@ Object", %NPCs\obj)
@@ -661,7 +661,7 @@ Function RegisterMap()
     RegisterMaintenanceTunnel()
     RegisterMapGen()
 
-    RegisterTypeConstructor("Room", "Room@ f(int zone, int shape, float x, float y, float z, int angle, string name)", @CreateRoom)
+    RegisterTypeConstructor("Room", "Room@+ f(int zone, int shape, float x, float y, float z, int angle, string name)", @CreateRoom)
 
     RegisterTypeField("Room", "int Zone", %Rooms\zone)
     RegisterTypeField("Room", "int Found", %Rooms\found)
@@ -729,7 +729,7 @@ Function RegisterDecal()
     RegisterTypeFromPtr("Decal", %Decals)
 
     ; TODO: Ability to register custom decal textures.
-    RegisterTypeConstructor("Decal", "Decal@ f(int id, float x, float y, float z, float pitch, float yaw, float roll)", @CreateDecal)
+    RegisterTypeConstructor("Decal", "Decal@+ f(int id, float x, float y, float z, float pitch, float yaw, float roll)", @CreateDecal)
 
     RegisterTypeField("Decal", "B3D::Sprite@ Object", %Decals\obj)
     RegisterTypeField("Decal", "float SizeChange", %Decals\SizeChange)
@@ -802,7 +802,7 @@ Function RegisterItem()
     RegisterTypeField("Item", "int ID", %Items\ID)
     RegisterTypeField("Item", "string DrinkName", %Items\drinkName)
 
-    RegisterTypeConstructor("Item", "Item@ f(string name, float x, float y, float z)", @CreateItem)
+    RegisterTypeConstructor("Item", "Item@+ f(string name, float x, float y, float z)", @CreateItem)
     RegisterObjectMethod("Item", "void Remove(bool inGame=true)", @RemoveItem)
     RegisterObjectMethod("Item", "void Pick()", @PickItem)
     RegisterObjectMethod("Item", "void Drop(bool playDropSound=true)", @DropItem)
@@ -810,8 +810,8 @@ Function RegisterItem()
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::Item") Else SetDefaultNamespace("Item")
     RegisterGlobalProperty("int LastItemID", &LastItemID)
-    RegisterGlobalFunction("ItemTemplate@ FindTemplate(string name)", @FindItemTemplate)
-    RegisterGlobalFunction("Item@ CreateCup(string drinkName, float x, float y, float z, int r, int g, int b, float a=1)", @CreateCup)
+    RegisterGlobalFunction("ItemTemplate@+ FindTemplate(string name)", @FindItemTemplate)
+    RegisterGlobalFunction("Item@+ CreateCup(string drinkName, float x, float y, float z, int r, int g, int b, float a=1)", @CreateCup)
     SetDefaultNamespace(ns)
 End Function
 
@@ -1020,7 +1020,7 @@ Function RegisterEvent()
 
     RegisterGlobalFunction("CB::Sound@ LoadSound(Event@ event, string file, int num=0)", @LoadEventSound)
 
-    RegisterGlobalFunction("Event@ Create(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
+    RegisterGlobalFunction("Event@+ Create(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
 
     RegisterGlobalFunction("float UpdateElevator(float state, Door@ door1, Door@ door2, B3D::Entity@ room1, B3D::Entity@ room2, Event@ event, bool ignoreRotation = true)", @UpdateElevators)
 
@@ -1116,7 +1116,7 @@ Function RegisterSubtitles()
     RegisterGlobalFunction("void SetQueuedPause(B3D::Channel@ channel, bool paused)", @SetQueuedSubtitlePause)
     RegisterGlobalFunction("void Clear()", @ClearSubtitles)
     RegisterGlobalFunction("bool ShouldShow(SubtitleEntry@ entry)", @ShouldShowSubtitle)
-    RegisterGlobalFunction("SubtitleMsg@ TryCreate(QueuedSubtitleMsg@ queue, string txt=" + Chr(34) + Chr(34) + ")", @TryCreateSubtitleMsg)
+    RegisterGlobalFunction("SubtitleMsg@+ TryCreate(QueuedSubtitleMsg@ queue, string txt=" + Chr(34) + Chr(34) + ")", @TryCreateSubtitleMsg)
     RegisterGlobalFunction("void TryCreateSplit(QueuedSubtitleMsg@ queue, string txtLine, int padding)", @TryCreateSplitSubtitleMsg)
     RegisterGlobalFunction("void RecalculateBoxTarget()", @RecalculateSubtitleBoxTarget)
     RegisterGlobalFunction("void BumpUp(SubtitleMsg@ msg)", @BumpSubtitleUp)
@@ -1129,14 +1129,14 @@ Function RegisterSubtitles()
     RegisterGlobalFunction("void LoadTokens(string path, int tokenType)", @LoadSubtitleTokens)
     RegisterGlobalFunction("SubtitleEntry@ CreateEntry(string key, string value, SubtitleColor@ color, int tokenType, bool isCaptionDefault)", @CreateSubtitleEntry)
     RegisterGlobalFunction("void CreateToken(SubtitleEntry@ entry, string soundPathGroup, int tokenType)", @CreateSubtitleToken)
-    RegisterGlobalFunction("SubtitleToken@ GetToken(string soundPath)", @GetSubtitleToken)
+    RegisterGlobalFunction("SubtitleToken@+ GetToken(string soundPath)", @GetSubtitleToken)
     RegisterGlobalFunction("string ParseSettings(SubtitleEntry@ entry, string txt, bool isCaption=false)", @ParseSubtitleSettings)
     RegisterGlobalFunction("bool ApplyDataSetting(string key, string value, SubtitleEntry@ entry)", @ApplySubtitleDataSetting)
     RegisterGlobalFunction("bool ApplyColorSetting(string key, string value, SubtitleColor@ color)", @ApplySubtitleColorSetting)
-    RegisterGlobalFunction("SubtitleColor@ FindOrAddVoice(string voice)", @FindOrAddSubtitleVoice)
+    RegisterGlobalFunction("SubtitleColor@+ FindOrAddVoice(string voice)", @FindOrAddSubtitleVoice)
     RegisterGlobalFunction("void CopyColor(SubtitleColor@ fromColor, SubtitleColor@ toColor, bool keepVoiceKey=false, bool keepBools=true)", @CopySubtitleColor)
     RegisterGlobalFunction("bool ColorsMatch(SubtitleColor@ firstColor, SubtitleColor@ secondColor)", @SubtitleColorsMatch)
-    RegisterGlobalFunction("SubtitleColor@ InternColor(SubtitleColor@ color)", @InternSubtitleColor)
+    RegisterGlobalFunction("SubtitleColor@+ InternColor(SubtitleColor@ color)", @InternSubtitleColor)
     RegisterGlobalFunction("void CleanupColors()", @CleanupColors)
 
     SetDefaultNamespace(ns)

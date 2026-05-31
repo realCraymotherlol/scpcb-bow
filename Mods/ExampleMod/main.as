@@ -11,14 +11,14 @@ void Hook_InitializeEvents() {
     Event::Create("guardspin", "room3pit", 0, 1);
 }
 
-void Hook_UpdateEvent(CB::Event@ e) {
+void Hook_UpdateEvent(CB::Event e) {
     if (e.Name == "guardspin") {
         e.Room.Objects[1].Turn(0, FPSFactor * 10, 0);
     }
 }
 
-void Hook_FillRoom(CB::Room@ r) {
-    if (r.Objects[1] == null) @r.Objects[1] = CB::NPC(NPC::Type::Guard, r.X, r.Y + 1, r.Z).Collider;
+void Hook_FillRoom(CB::Room r) {
+    if (r.Objects[1] == null) r.Objects[1] = CB::NPC(NPC::Type::Guard, r.X, r.Y + 1, r.Z).Collider;
 }
 
 float configuredFOV = -1.f;
@@ -39,7 +39,7 @@ bool IsKeyUp(int key) {
 
 bool wasCrouched = true;
 
-CB::Sound@ bonk;
+CB::Sound bonk;
 
 void Hook_Update() {
     if (configuredFOV == -1.f) {
@@ -63,7 +63,7 @@ void Hook_Update() {
             if (Player::Collider.CollisionY(i) > Player::Collider.GetY() + 0.1) {
                 Player::Crouch = true;
                 if (bonk == null) {
-                    @bonk = CB::Sound("SFX\\bonk.mp3");
+                    bonk = CB::Sound("SFX\\bonk.mp3");
                 }
                 bonk.Play();
             }
@@ -72,7 +72,7 @@ void Hook_Update() {
     Music::ShouldPlay = m;
 }
 
-void Hook_CombineItems(Item@ dragged, Item@ onto) {
+void Hook_CombineItems(Item dragged, Item onto) {
     if (dragged.Template.Name.Substring(0, 3) != "key" || onto.Template.Name.Substring(0, 3) != "key") return;
 
     string lvl1 = dragged.Template.Name.Substring(3, 1);
@@ -83,12 +83,12 @@ void Hook_CombineItems(Item@ dragged, Item@ onto) {
     int res = lvl1.ParseInt() + lvl2.ParseInt();
     if (res > 6) return;
 
-    Item@ new = Item("key" + ToString(res), Player::Camera.GetX(true), Player::Camera.GetY(true), Player::Camera.GetZ(true));
+    Item new = Item("key" + ToString(res), Player::Camera.GetX(true), Player::Camera.GetY(true), Player::Camera.GetZ(true));
     dragged.Remove(true);
     onto.Remove(true);
 }
 
-bool Hook_LoadRoomTemplateEntity(CB::RoomTemplate@ rt, int version, B3D::Stream@ f, string name) {
+bool Hook_LoadRoomTemplateEntity(CB::RoomTemplate rt, int version, B3D::Stream f, string name) {
     // Screens-B-Gone!
     if (name == "screen") {
         f.ReadFloat();

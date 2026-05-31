@@ -300,11 +300,10 @@ Function LoadRMesh(file$,rt.RoomTemplates)
 		temp1s=ReadString(f)
 		If LoadRoomTemplateEntity\Subscribers > 0 Then
 			Local rtt.RoomTemplates = rt
-			Local ff% = f
 			PrepareFunction(4)
 			SetArgObj(0, &rtt)
 			SetArgInt(1, version)
-			SetArgObj(2, &ff)
+			SetArgIntObj(2, f)
 			SetArgString(3, temp1s)
 			If CallHook(LoadRoomTemplateEntity) Then Continue
 		EndIf
