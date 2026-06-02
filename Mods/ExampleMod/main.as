@@ -21,14 +21,14 @@ void Hook_UpdateEvent(CB::Event e) {
 }
 
 void Hook_FillRoom(CB::Room r) {
-    if (r.Objects[1] == null) r.Objects[1] = CB::NPC(NPC::Type::Guard, r.X, r.Y + 1, r.Z).Collider;
+    if (r.Objects[1] == null) r.Objects[1] = CB::NPC::Create(NPC::Type::Guard, r.X, r.Y + 1, r.Z).Collider;
 }
 
 float configuredFOV = -1.f;
 
 array<bool> keyDownCache;
 
-bool IsKeyUp(int key) {
+bool IsKeyUp(uint key) {
     if (keyDownCache.Length < key + 1) keyDownCache.Resize(key + 1);
 
     bool actuallyDown = KeyDown(key);
@@ -66,7 +66,7 @@ void Hook_Update() {
             if (Player::Collider.CollisionY(i) > Player::Collider.GetY() + 0.1) {
                 Player::Crouch = true;
                 if (bonk == null) {
-                    bonk = CB::Sound("SFX\\bonk.mp3");
+                    bonk = CB::Sound::Load("SFX\\bonk.mp3");
                 }
                 bonk.Play();
                 BonkAchv.Award();
@@ -87,7 +87,7 @@ void Hook_CombineItems(Item dragged, Item onto) {
     int res = lvl1.ParseInt() + lvl2.ParseInt();
     if (res > 6) return;
 
-    Item new = Item("key" + ToString(res), Player::Camera.GetX(true), Player::Camera.GetY(true), Player::Camera.GetZ(true));
+    Item new = Item::Create("key" + ToString(res), Player::Camera.GetX(true), Player::Camera.GetY(true), Player::Camera.GetZ(true));
     dragged.Remove(true);
     onto.Remove(true);
 }

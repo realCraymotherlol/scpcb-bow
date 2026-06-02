@@ -150,14 +150,12 @@ End Function
 Function RegisterCBAudio()
     RegisterType("Sound")
 
-    RegisterTypeConstructor("Sound", "Sound@ f(string file)", @LoadSound_Strict)
     RegisterObjectMethod("Sound", "void Free()", @FreeSound_Strict)
     
     RegisterObjectMethod("Sound", "B3D::Channel@ Play()", @PlaySound_Strict)
 
 
     RegisterType("Stream")
-    RegisterTypeConstructor("Stream", "Stream@ f(string file, float volume=1, int customMode=2)", @StreamSound_Strict)
     RegisterObjectMethod("Stream", "void Stop()", @StopStream_Strict)
     
     RegisterObjectMethod("Stream", "void SetVolume(float volume, bool isSFX=false)", @SetStreamVolume_Strict)
@@ -169,7 +167,9 @@ Function RegisterCBAudio()
 
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::Sound") Else SetDefaultNamespace("Sound")
+    RegisterGlobalFunction("CB::Sound@ Load(string file)", @LoadSound_Strict)
     RegisterGlobalFunction("CB::Sound@ LoadTemporary(string file)", @LoadTempSound)
+    RegisterGlobalFunction("CB::Stream@ Stream(string file, float volume=1, int customMode=2)", @StreamSound_Strict)
     SetDefaultNamespace(ns)
 
 
@@ -282,8 +282,6 @@ End Function
 Function RegisterDoor()
     RegisterTypeFromPtr("Door", %Doors)
 
-    RegisterTypeConstructor("Door", "Door@+ f(int lvl, float x, float y, float z, float yawAngle, Room@ room, bool startOpen=false, int big=0, int keycard=0, string code=" + Chr(34) + Chr(34) + ", bool useCollisionMesh=false)", @CreateDoor)
-
     RegisterTypeField("Door", "B3D::Mesh@ Object", %Doors\obj)
     RegisterTypeField("Door", "B3D::Mesh@ Object2", %Doors\obj2)
     RegisterTypeField("Door", "B3D::Mesh@ FrameObject", %Doors\frameobj)
@@ -313,6 +311,11 @@ Function RegisterDoor()
     RegisterTypeField("Door", "bool MTFClose", %Doors\MTFClose)
     RegisterTypeField("Door", "bool NPCCalledElevator", %Doors\NPCCalledElevator) ; TODO: Dead code?
     RegisterTypeField("Door", "B3D::Mesh@ DoorHitObject", %Doors\DoorHitOBJ)
+
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Door") Else SetDefaultNamespace("Door")
+    RegisterGlobalFunction("Door@+ Create(int lvl, float x, float y, float z, float yawAngle, Room@ room, bool startOpen=false, int big=0, int keycard=0, string code=" + Chr(34) + Chr(34) + ", bool useCollisionMesh=false)", @CreateDoor)
+    SetDefaultNamespace(ns)
 End Function
 
 Function RegisterRoomTemplate()
@@ -410,7 +413,6 @@ Function RegisterRoomTemplate()
 End Function
 
 Function RegisterWayPoint()
-    RegisterTypeConstructor("Waypoint", "Waypoint@+ f(float x, float y, float z, Door@ door, Room@ room)", @CreateWaypoint)
     RegisterTypeField("Waypoint", "B3D::Pivot@ Object", %WayPoints\obj)
     RegisterTypeField("Waypoint", "Door@ Door", %WayPoints\door)
     RegisterTypeField("Waypoint", "Room@ Room", %WayPoints\room)
@@ -421,6 +423,11 @@ Function RegisterWayPoint()
     RegisterTypeField("Waypoint", "float GCost", %WayPoints\Gcost)
     RegisterTypeField("Waypoint", "float HCost", %WayPoints\Hcost)
     RegisterTypeField("Waypoint", "Waypoint@ Parent", %WayPoints\parent)
+
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Waypoint") Else SetDefaultNamespace("Waypoint")
+    RegisterGlobalFunction("Waypoint@+ f(float x, float y, float z, Door@ door, Room@ room)", @CreateWaypoint)
+    SetDefaultNamespace(ns)
 End Function
 
 Function RegisterTriggerbox()
@@ -521,10 +528,10 @@ Function RegisterNPC()
     RegisterGlobalProperty("NPC@ Current096", &Curr096)
     RegisterGlobalProperty("NPC@ Current5131", &Curr5131)
 
+    RegisterGlobalFunction("NPC@+ Create(Type type, float x, float y, float z)", @CreateNPC)
+
     SetDefaultNamespace(ns)
 
-    ; Replace first argument with some other type to enforce having to register modded NPC types.
-    RegisterTypeConstructor("NPC", "NPC@+ f(NPC::Type type, float x, float y, float z)", @CreateNPC)
     RegisterObjectMethod("NPC", "void Remove()", @RemoveNPC)
 
     RegisterTypeField("NPC", "B3D::Entity@ Object", %NPCs\obj)
@@ -661,7 +668,10 @@ Function RegisterMap()
     RegisterMaintenanceTunnel()
     RegisterMapGen()
 
-    RegisterTypeConstructor("Room", "Room@+ f(int zone, int shape, float x, float y, float z, int angle, string name)", @CreateRoom)
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Room") Else SetDefaultNamespace("Room")
+    RegisterGlobalFunction("Room@+ Create(int zone, int shape, float x, float y, float z, int angle, string name)", @CreateRoom)
+    SetDefaultNamespace(ns)
 
     RegisterTypeField("Room", "int Zone", %Rooms\zone)
     RegisterTypeField("Room", "int Found", %Rooms\found)
@@ -728,8 +738,11 @@ End Function
 Function RegisterDecal()
     RegisterTypeFromPtr("Decal", %Decals)
 
+    Local ns$ = GetDefaultNamespace()
+    If ns <> "" Then SetDefaultNamespace(ns + "::Decal") Else SetDefaultNamespace("Decal")
     ; TODO: Ability to register custom decal textures.
-    RegisterTypeConstructor("Decal", "Decal@+ f(int id, float x, float y, float z, float pitch, float yaw, float roll)", @CreateDecal)
+    RegisterGlobalFunction("Decal@+ Create(int id, float x, float y, float z, float pitch, float yaw, float roll)", @CreateDecal)
+    SetDefaultNamespace(ns)
 
     RegisterTypeField("Decal", "B3D::Sprite@ Object", %Decals\obj)
     RegisterTypeField("Decal", "float SizeChange", %Decals\SizeChange)
@@ -802,16 +815,16 @@ Function RegisterItem()
     RegisterTypeField("Item", "int ID", %Items\ID)
     RegisterTypeField("Item", "string DrinkName", %Items\drinkName)
 
-    RegisterTypeConstructor("Item", "Item@+ f(string name, float x, float y, float z)", @CreateItem)
     RegisterObjectMethod("Item", "void Remove(bool inGame=true)", @RemoveItem)
     RegisterObjectMethod("Item", "void Pick()", @PickItem)
     RegisterObjectMethod("Item", "void Drop(bool playDropSound=true)", @DropItem)
 
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::Item") Else SetDefaultNamespace("Item")
-    RegisterGlobalProperty("int LastItemID", &LastItemID)
-    RegisterGlobalFunction("ItemTemplate@+ FindTemplate(string name)", @FindItemTemplate)
+    RegisterGlobalFunction("Item@+ Create(string name, float x, float y, float z)", @CreateItem)
     RegisterGlobalFunction("Item@+ CreateCup(string drinkName, float x, float y, float z, int r, int g, int b, float a=1)", @CreateCup)
+    RegisterGlobalFunction("ItemTemplate@+ FindTemplate(string name)", @FindItemTemplate)
+    RegisterGlobalProperty("int LastItemID", &LastItemID)
     SetDefaultNamespace(ns)
 End Function
 
@@ -1018,7 +1031,7 @@ Function RegisterEvent()
     Local ns$ = GetDefaultNamespace()
     If ns <> "" Then SetDefaultNamespace(ns + "::Event") Else SetDefaultNamespace("Event")
 
-    RegisterGlobalFunction("CB::Sound@ LoadSound(Event@ event, string file, int num=0)", @LoadEventSound)
+    RegisterGlobalFunction("Sound@ LoadSound(Event@ event, string file, int num=0)", @LoadEventSound)
 
     RegisterGlobalFunction("Event@+ Create(string eventName, string roomName, int id, float probability=0)", @CreateEvent)
 
