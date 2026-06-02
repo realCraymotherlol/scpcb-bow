@@ -74,14 +74,14 @@ Global AchvMSGenabled% = GetOptionInt("general", "achievement popup enabled")
 Global AchvLocked = LoadImage_Strict("GFX\menu\achievements\achvlocked.png")
 ResizeImage(AchvLocked, 64*GraphicHeight/768.0, 64*GraphicHeight/768.0)
 
-Function GiveAchievement(achv.Achievements, showMessage%=True)
+Function GiveAchievement(achv.Achievements, showMessage%=True, steam%=True)
 	If Not achv\Unlocked Then
 		achv\Unlocked=True
 		If AchvMSGenabled And showMessage Then
 			CreateAchievementMsg(achv)
 		EndIf
 		; The "Fair Play" achievement cannot be found on Steam because every achievement there requires the console to not be used.
-		If SteamActive And (Not UsedConsole) And achv<>AchvConsole Then
+		If steam And SteamActive And (Not UsedConsole) And achv<>AchvConsole Then
 			Steam_Achieve("Achv" + achv\Name)
 		End If
 	EndIf

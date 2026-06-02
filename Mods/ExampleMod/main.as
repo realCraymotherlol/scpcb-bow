@@ -2,9 +2,18 @@ using namespace CB;
 using namespace B3D;
 
 Music m;
+Achievement BonkAchv;
 
 void Hook_Initialize() {
     m = Music::RegisterCustom("SFX\\Radio\\scpradio0.ogg");
+}
+
+void Hook_LoadEntities() {
+    // TODO: One-time initialize hook after launcher.
+    if (BonkAchv == null) {
+        BonkAchv = Achievement::Create("Bonk", false);
+        BonkAchv.InsertBefore(Achievement::AchvConsole);
+    }
 }
 
 void Hook_InitializeEvents() {
@@ -66,6 +75,7 @@ void Hook_Update() {
                     bonk = CB::Sound("SFX\\bonk.mp3");
                 }
                 bonk.Play();
+                BonkAchv.Award();
             }
         }
     }
