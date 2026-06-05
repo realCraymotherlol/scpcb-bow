@@ -1,4 +1,4 @@
-# SCP - Containment Breach
+# SCP - Containment Breach Box of Wonders
 
 The game is based on the works of the SCP Foundation community (http://www.scp-wiki.net/).
 
@@ -8,7 +8,12 @@ http://creativecommons.org/licenses/by-sa/3.0/
 
 Requirements:
 
--	[Blitz3D CB](https://github.com/SCP-CB-Community-Preservation-Project/Blitz3D)
+-	[Blitz3D CB] (https://github.com/SCP-CB-Community-Preservation-Project/Blitz3D) for source code editing.
+-   [CBRE-EX] for room making.
+
+
+At the time of writing the DX9, Jolt, Scripting branch is not compile-able, due to Ne4to's BlitzPRO not being available yet.
+
 
 > [!IMPORTANT]
 > Make sure to copy all .decls files from this repo's `Userlibs` folder to your Blitz3D installation's `userlibs` folder before compiling.
