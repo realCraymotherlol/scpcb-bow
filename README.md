@@ -1,4 +1,4 @@
-# SCP - Containment Breach Box of Wonders
+# SCP - Containment Breach Plus
 
 The game is based on the works of the SCP Foundation community (http://www.scp-wiki.net/).
 
