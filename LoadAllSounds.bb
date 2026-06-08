@@ -183,6 +183,10 @@ Next
  MachineSFX% = LoadSound_Strict("SFX\SCP\914\Refining.ogg")
 
  ApacheSFX = LoadSound_Strict("SFX\Character\Apache\Propeller.ogg")
+ 
+For i = 0 To 2
+	MeowSFX(i) = LoadSound_Strict("SFX\Interact\Meow" + (i + 1) + ".ogg")
+Next
 
  ;CurrStepSFX
 ;Dim StepSFX%(4, 2, 8) ;(normal/metal, walk/run, id)
@@ -206,7 +210,6 @@ For i = 0 To 2
 	Step2SFX(i+3) = LoadSound_Strict("SFX\Step\StepForest" + (i + 1) + ".ogg")
 Next 
 End Function
-
 
 
 

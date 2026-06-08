@@ -2029,6 +2029,8 @@ Dim DamageSFX%(9)
 Dim MTFSFX%(8)
 
 Dim CoughSFX%(3)
+Dim MeowSFX%(3)
+
 Global CoughCHN%, VomitCHN%
 
 Global MachineSFX% 
@@ -7306,7 +7308,9 @@ Function DrawGUI()
 					;[End Block]
 				Case "bob"
 					Msg = I_Loc\MessageItem_BobUse
-					MsgTimer = 70 * 4
+					SelectedItem = Null
+					PlaySound_Strict(MeowSFX(Rand(0, 2)))
+					MsgTimer = 70 * 6
 				Default
 					If SelectedItem\itemtemplate\group = "paper" Lor SelectedItem\itemtemplate\name = "ticket" Then
 						;[Block]
