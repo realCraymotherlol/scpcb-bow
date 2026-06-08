@@ -100,7 +100,7 @@ Function CreateNPC.NPCs(NPCtype%, x#, y#, z#)
 				EntityTexture n\obj, texFestive, 0, 0
 				FreeTexture texFestive
 			EndIf
-
+;;
 			If BirthdayHat Then
 				n\obj3 = LoadMesh_Strict("GFX\npcs\partyhat.b3d", n\obj)
 			EndIf

@@ -357,6 +357,7 @@ Type LocalizationTable
     Field MessageItem_1162UseKey$
     Field MessageItem_1162UseHearing$
     Field MessageItem_1162UseTicket$
+    Field MessageItem_BobUse$
     Field MessageHelp_Paper$
     Field MessageHelp_Inventory$
     Field MessageHelp_View$
@@ -895,6 +896,7 @@ Function LoadLocalization(loc.LocalizationTable, file$)
                             Case "1162.use.key" If loc\MessageItem_1162UseKey = "" Then loc\MessageItem_1162UseKey = value
                             Case "1162.use.hearing" If loc\MessageItem_1162UseHearing = "" Then loc\MessageItem_1162UseHearing = value
                             Case "1162.use.ticket" If loc\MessageItem_1162UseTicket = "" Then loc\MessageItem_1162UseTicket = value
+                            Case "bob.use" If loc\MessageItem_BobUse = "" Then loc\MessageItem_BobUse = value
                         End Select
                     Case "Message Help"
                         Select key

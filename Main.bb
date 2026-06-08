@@ -1,9 +1,9 @@
-Const VersionNumber$ = "1.3.12.4"
+Const VersionNumber$ = "0.1a"
 ;Only change this if the version given isn't working with the current build version - ENDSHN
 Const CompatibleNumber$ = "1.3.12"
 
 InitErrorMsgs(11, True)
-SetErrorMsg(0, "An error occured in SCP - Containment Breach v" + VersionNumber)
+SetErrorMsg(0, "An error occured in SCP - Containment Breach Plus v" + VersionNumber)
 SetErrorMsg(1, "Please send us the generated minidump along with a screenshot of this window!")
 SetErrorMsg(2, "---------------------------------------------------")
 SetErrorMsg(3, "OS: " + SystemProperty("os") + " " + (32 + (GetEnv("ProgramFiles(X86)") <> 0) * 32) + " Bit (Build: " + SystemProperty("osbuild") + ")")
@@ -31,7 +31,7 @@ Const OptionDefaultFile$ = "defaults.ini"
 Function InitDataDir$()
 	Local dir$ = GetEnv("AppData") + "\Undertow Games"
 	If FileType(dir) <> 2 Then CreateDir(dir)
-	dir = dir + "\SCP - Containment Breach"
+	dir = dir + "\SCP - Containment Breach Plus"
 	If FileType(dir) <> 2 Then CreateDir(dir)
 	Return dir
 End Function
@@ -74,7 +74,7 @@ End Function
 Function GetCLIInt%(name$, def%=0)
 	Local txt$ = GetCLIString(name)
 	If txt <> "" Then Return Int(txt)
-	return def
+	Return def
 End Function
 
 Function GetCLIString$(name$, def$="")
@@ -89,8 +89,8 @@ Function GetCLIString$(name$, def$="")
 	EndIf
 	begin = begin + Len(name)
 	Local end% = Instr(cmd, " ", begin)
-	If end = 0 Then end = Len(cmd) + 1
-	Return Trim(Mid(cmd, begin, end - begin))
+	If End = 0 Then End = Len(cmd) + 1
+	Return Trim(Mid(cmd, begin, End - begin))
 End Function
 
 Include "Blitz_File_FileName.bb"
@@ -225,7 +225,7 @@ If (LauncherEnabled Lor HasCLIFlag("launcher")) And (Not IsRestart) And (Not Has
 EndIf
 
 SetGfxDriver(SelectedGFXDriver)
-Global GFXDriverName$ = GFXDriverName(SelectedGFXDriver)
+Global GFXDriverName$ = GfxDriverName(SelectedGFXDriver)
 
 ;New "fake fullscreen" - ENDSHN Psst, it's called borderless windowed mode --Love Mark,
 If BorderlessWindowed
@@ -305,7 +305,7 @@ Global GameSaved%
 
 Global CanSave% = True
 
-AppTitle "SCP - Containment Breach v"+VersionNumber
+AppTitle "SCP - Containment Breach Plus v"+VersionNumber
 
 PlayStartupVideos()
 
@@ -2686,11 +2686,11 @@ Function UseDoor(d.Doors, showmsg%=True, playsfx%=True)
 						If (Msg=I_Loc\MessageButton_ElevatorAlready) Or (MsgTimer<70*3) Or (ElevatorButtonSpamCount > 20 And Msg <> I_Loc\MessageButton_ElevatorMav)
 							Local rnd%
 							If ElevatorButtonSpamCount > 20 Then
-								rnd = 3
+								Rnd = 3
 							Else
-								rnd = Rand(10)
+								Rnd = Rand(10)
 							EndIf
-							Select rnd
+							Select Rnd
 								Case 1
 									Msg = I_Loc\MessageButton_ElevatorStop
 									MsgTimer = 70 * 7
@@ -3140,7 +3140,7 @@ Global TotalVidMem = TotalVidMem()
 Global TotalPhysMem = TotalPhys()
 
 While IsRunning
-	SetErrorMsg(5, "GPU: " + GFXDriverName + " (" + (TotalVidMem - (AvailVidMem() / 1024)) + "MB/" + TotalVidMem + " MB)")
+	SetErrorMsg(5, "GPU: " + GfxDriverName + " (" + (TotalVidMem - (AvailVidMem() / 1024)) + "MB/" + TotalVidMem + " MB)")
 	SetErrorMsg(6, "Global memory status: (" + (TotalPhysMem - (AvailPhys() / 1024)) + "MB/" + TotalPhysMem + " MB)")
 
 	Cls
@@ -4605,10 +4605,10 @@ Function MovePlayer()
 					
 					If Sprint = 1.0 Then
 						PlayerSoundVolume = Max(2.5-(Crouch*0.6),PlayerSoundVolume)
-						tempchn% = PlaySound_Strict(StepSFX(temp, 0, Rand(0, 7)))
+						tempchn% = PlaySound_Strict(StepSFX(temp, 0, Rand(0, 3)))
 					Else
 						PlayerSoundVolume = Max(4.0,PlayerSoundVolume)
-						tempchn% = PlaySound_Strict(StepSFX(temp, 1, Rand(0, 7)))
+						tempchn% = PlaySound_Strict(StepSFX(temp, 1, Rand(0, 3)))
 					End If
 				ElseIf CurrStepSFX=1
 					tempchn% = PlaySound_Strict(Step2SFX(Rand(0, 2)))
@@ -4617,10 +4617,10 @@ Function MovePlayer()
 				ElseIf CurrStepSFX=3
 					If Sprint = 1.0 Then
 						PlayerSoundVolume = Max(2.5-(Crouch*0.6),PlayerSoundVolume)
-						tempchn% = PlaySound_Strict(StepSFX(0, 0, Rand(0, 7)))
+						tempchn% = PlaySound_Strict(StepSFX(0, 0, Rand(0, 3)))
 					Else
 						PlayerSoundVolume = Max(4.0,PlayerSoundVolume)
-						tempchn% = PlaySound_Strict(StepSFX(0, 1, Rand(0, 7)))
+						tempchn% = PlaySound_Strict(StepSFX(0, 1, Rand(0, 3)))
 					End If
 				EndIf
 				If tempchn <> 0 Then ChannelVolume tempchn, (1.0-(Crouch*0.6))*SFXVolume#
@@ -7304,6 +7304,9 @@ Function DrawGUI()
 						SelectedItem = Null
 					EndIf
 					;[End Block]
+				Case "bob"
+					Msg = I_Loc\MessageItem_BobUse
+					MsgTimer = 70 * 4
 				Default
 					If SelectedItem\itemtemplate\group = "paper" Lor SelectedItem\itemtemplate\name = "ticket" Then
 						;[Block]
@@ -10663,10 +10666,10 @@ Function Load294()
 					row = Int(Trim(Left(section, layerSplitterPos - 1)))
 					layer = Int(Trim(Right(section, Len(section) - layerSplitterPos)))
 				EndIf
-				If row >= Keyboard294Height then
+				If row >= Keyboard294Height Then
 					RuntimeErrorExt("Row " + Str(row) + " out of range.")
 				EndIf
-				If layer >= Keyboard294Layers then
+				If layer >= Keyboard294Layers Then
 					RuntimeErrorExt("Layer " + Str(layer) + " out of range.")
 				EndIf
 			Else
@@ -10695,7 +10698,7 @@ Function Load294()
 					End Select
 				Else
 					Local column = Int(key)
-					If column >= Keyboard294Width then
+					If column >= Keyboard294Width Then
 						RuntimeErrorExt("Column " + Str(column) + " out of range.")
 					EndIf
 					If layer = -1 Then
@@ -12339,7 +12342,7 @@ Function PlayMovie(moviefile$)
 		DebugLog "Scaled: "+ScaledGraphicHeight
 	EndIf
 
-	Local SplashScreenVideo = OpenMovie(moviefile$+".avi")
+	Local SplashScreenVideo = OpenMovie(moviefile$+".avi") ; i love gatekeeping the dx9 version of blitz3d!
 	If SplashScreenVideo = 0 Then Return
 
 	DebugLog(RealGraphicHeight)
@@ -12363,6 +12366,7 @@ Function PlayStartupVideos()
 
 	PlayMovie("GFX\menu\startup_Undertow")
 	PlayMovie("GFX\menu\startup_TSS")
+	PlayMovie("GFX\menu\startup_Cray")
 End Function
 
 Function CanUseItem(canUseWithHazmat%, canUseWithGasMask%, canUseWithEyewear%)
@@ -12463,6 +12467,6 @@ End Function
 
 
 ;~IDEal Editor Parameters:
-;~F#39#D8#DCD#162D#242C#2B2A
-;~B#11E0#145E#1C07
+;~F#39#242C
+;~B#17
 ;~C#Blitz3D
